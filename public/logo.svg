@@ -1,17 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 110" width="120" height="110" role="img">
-  <title>CalcWise Stacked Logo</title>
-  <rect x="32" y="0" width="56" height="56" rx="12" fill="#0d9488"/>
-  <rect x="44" y="10" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.35"/>
-  <rect x="56" y="10" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.35"/>
-  <rect x="68" y="10" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.35"/>
-  <rect x="44" y="20" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.70"/>
-  <rect x="56" y="20" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.70"/>
-  <rect x="68" y="20" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.70"/>
-  <rect x="44" y="30" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.70"/>
-  <rect x="56" y="30" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.70"/>
-  <rect x="68" y="30" width="8" height="6" rx="1.5" fill="#ffffff"/>
-  <polyline points="45,44 54,38 63,41 75,33" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="75" cy="33" r="2" fill="#ffffff"/>
-  <text x="60" y="80" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#1e293b" letter-spacing="-0.5" text-anchor="middle">Calc<tspan fill="#0d9488">Wise</tspan></text>
-  <text x="60" y="97" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="8.5" font-weight="400" fill="#94a3b8" letter-spacing="0.08em" text-anchor="middle">SMART CALCULATIONS</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 110" width="140" height="110" role="img">
+  <title>CalcWisePro Stacked Logo</title>
+  <rect x="42" y="0" width="56" height="56" rx="12" fill="#0d9488"/>
+  <rect x="54" y="10" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.35"/>
+  <rect x="66" y="10" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.35"/>
+  <rect x="78" y="10" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.35"/>
+  <rect x="54" y="20" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.70"/>
+  <rect x="66" y="20" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.70"/>
+  <rect x="78" y="20" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.70"/>
+  <rect x="54" y="30" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.70"/>
+  <rect x="66" y="30" width="8" height="6" rx="1.5" fill="#ffffff" opacity="0.70"/>
+  <rect x="78" y="30" width="8" height="6" rx="1.5" fill="#ffffff"/>
+  <polyline points="55,44 64,38 73,41 85,33" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="85" cy="33" r="2" fill="#ffffff"/>
+  <text x="70" y="80"
+    font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-size="20" font-weight="800" fill="#1e293b" letter-spacing="-0.5" text-anchor="middle">Calc<tspan fill="#0d9488">Wise</tspan><tspan fill="#1e293b">Pro</tspan></text>
+  <text x="70" y="97"
+    font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-size="8" font-weight="400" fill="#94a3b8" letter-spacing="0.08em" text-anchor="middle">SMART CALCULATIONS</text>
 </svg>
