@@ -1,0 +1,185 @@
+/* ========================================
+   Recharts Custom Styles
+   ======================================== */
+
+/* ----- Tooltip Styles - FIXED ----- */
+.recharts-tooltip-wrapper {
+  background: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 10px 14px !important;
+  z-index: 9999 !important;  /* ✅ Added */
+  pointer-events: none !important;  /* ✅ Added */
+}
+
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.recharts-tooltip-item {
+  font-size: 13px !important;
+  color: #1e293b !important;
+  padding: 3px 0 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+}
+
+.recharts-tooltip-item-name {
+  color: #64748b !important;
+  font-weight: 500 !important;
+}
+
+.recharts-tooltip-item-value {
+  font-weight: 600 !important;
+  color: #0f172a !important;
+}
+
+.recharts-tooltip-label {
+  font-weight: 600 !important;
+  color: #0f172a !important;
+  font-size: 13px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding-bottom: 6px !important;
+  margin-bottom: 6px !important;
+}
+
+/* ----- Legend Styles ----- */
+.recharts-legend-wrapper {
+  padding-top: 8px !important;
+}
+
+.recharts-legend-item {
+  font-size: 13px !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+}
+
+.recharts-legend-item:hover {
+  opacity: 0.7 !important;
+}
+
+.recharts-legend-item-text {
+  font-weight: 500 !important;
+}
+
+/* ----- Axis Styles ----- */
+.recharts-cartesian-axis-line {
+  stroke: #e2e8f0 !important;
+}
+
+.recharts-cartesian-axis-tick-line {
+  stroke: #e2e8f0 !important;
+}
+
+.recharts-cartesian-axis-tick-value {
+  font-size: 12px !important;
+  fill: #94a3b8 !important;
+  font-weight: 500 !important;
+}
+
+/* ----- Grid Styles ----- */
+.recharts-cartesian-grid-line {
+  stroke: #f1f5f9 !important;
+  stroke-dasharray: 4px 4px !important;
+}
+
+/* ----- Bar Chart Styles ----- */
+.recharts-bar-rectangle {
+  transition: all 0.2s ease !important;
+}
+
+.recharts-bar-rectangle:hover {
+  opacity: 0.8 !important;
+}
+
+/* ----- Pie Chart Styles ----- */
+.recharts-pie-sector {
+  transition: all 0.3s ease !important;
+}
+
+.recharts-pie-sector:hover {
+  opacity: 0.85 !important;
+  transform: scale(1.02) !important;
+}
+
+.recharts-pie-label-line {
+  stroke: #94a3b8 !important;
+  stroke-width: 1px !important;
+}
+
+.recharts-pie-label-text {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  fill: #1e293b !important;
+}
+
+/* ----- Area Chart Styles ----- */
+.recharts-area-area {
+  transition: all 0.3s ease !important;
+}
+
+.recharts-area-dot:hover {
+  r: 6 !important;
+}
+
+/* ----- Line Chart Styles ----- */
+.recharts-line-dot:hover {
+  r: 6 !important;
+}
+
+.recharts-line-curve {
+  stroke-width: 2.5px !important;
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 640px) {
+  .recharts-legend-item {
+    font-size: 11px !important;
+  }
+  .recharts-cartesian-axis-tick-value {
+    font-size: 10px !important;
+  }
+  .recharts-tooltip-wrapper {
+    padding: 6px 10px !important;
+  }
+  .recharts-tooltip-item {
+    font-size: 11px !important;
+  }
+  .recharts-pie-label-text {
+    font-size: 10px !important;
+  }
+}
+
+/* ----- Dark Mode ----- */
+@media (prefers-color-scheme: dark) {
+  .recharts-tooltip-wrapper {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+  }
+  .recharts-tooltip-item {
+    color: #e2e8f0 !important;
+  }
+  .recharts-tooltip-item-name {
+    color: #94a3b8 !important;
+  }
+  .recharts-tooltip-item-value {
+    color: #f8fafc !important;
+  }
+  .recharts-tooltip-label {
+    color: #f8fafc !important;
+    border-bottom-color: #334155 !important;
+  }
+  .recharts-cartesian-axis-line {
+    stroke: #334155 !important;
+  }
+  .recharts-cartesian-axis-tick-value {
+    fill: #94a3b8 !important;
+  }
+  .recharts-cartesian-grid-line {
+    stroke: #1e293b !important;
+  }
+}

@@ -1,0 +1,244 @@
+├── 📁 app/
+│   ├── 📄 layout.tsx
+│   ├── 📄 page.tsx
+│   ├── 📄 sitemap.ts
+│   ├── 📄 robots.ts
+│   ├── 📄 not-found.tsx
+│   ├── 📄 globals.css
+│   │
+│   ├── 📁 mortgage-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 loan-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 compound-interest-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 car-loan-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 retirement-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 credit-card-payoff-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 investment-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 debt-payoff-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 savings-goal-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 student-loan-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 amortization-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 rent-vs-buy-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 net-worth-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 budget-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 inflation-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 simple-interest-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 home-affordability-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 refinance-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 emergency-fund-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 salary-calculator/
+│   │   ├── 📄 page.tsx
+│   │   └── 📄 metadata.ts
+│   │
+│   ├── 📁 about/
+│   │   └── 📄 page.tsx
+│   │
+│   ├── 📁 contact/
+│   │   └── 📄 page.tsx
+│   │
+│   ├── 📁 privacy-policy/
+│   │   └── 📄 page.tsx
+│   │
+│   ├── 📁 terms/
+│   │   └── 📄 page.tsx
+│   │
+│   └── 📁 api/
+│       └── 📁 health/
+│           └── 📄 route.ts
+│
+├── 📁 components/
+│   ├── 📁 layout/
+│   │   ├── 📄 Header.tsx
+│   │   ├── 📄 Footer.tsx
+│   │   └── 📄 Navigation.tsx
+│   │
+│   ├── 📁 calculators/
+│   │   ├── 📄 CalculatorForm.tsx
+│   │   ├── 📄 ResultsDisplay.tsx
+│   │   ├── 📄 Charts.tsx
+│   │   ├── 📄 InputField.tsx
+│   │   ├── 📄 CalculatorLayout.tsx
+│   │   ├── 📄 ComparisonMode.tsx        🆕
+│   │   ├── 📄 ExtraPaymentDetails.tsx   🆕
+│   │   ├── 📄 ExportOptions.tsx         🆕
+│   │   ├── 📄 Tooltip.tsx               🆕
+│   │   └── 📄 AffordabilitySection.tsx  🆕
+│   │
+│   ├── 📁 ui/
+│   │   ├── 📄 AdUnit.tsx
+│   │   ├── 📄 SearchBar.tsx
+│   │   ├── 📄 CalculatorCard.tsx
+│   │   ├── 📄 Container.tsx
+│   │   ├── 📄 Button.tsx
+│   │   └── 📄 LoadingSpinner.tsx
+│   │
+│   ├── 📁 seo/
+│   │   ├── 📄 SchemaMarkup.tsx
+│   │   ├── 📄 Breadcrumb.tsx
+│   │   └── 📄 FAQSchema.tsx
+│   │
+│   └── 📁 home/
+│       ├── 📄 Hero.tsx
+│       └── 📄 Features.tsx
+│
+├── 📁 lib/
+│   ├── 📁 calculators/
+│   │   ├── 📄 mortgage.ts
+│   │   ├── 📄 loan.ts
+│   │   ├── 📄 compound-interest.ts
+│   │   ├── 📄 investment.ts
+│   │   ├── 📄 retirement.ts
+│   │   ├── 📄 credit-card.ts
+│   │   ├── 📄 car-loan.ts
+│   │   ├── 📄 debt-payoff.ts
+│   │   ├── 📄 savings-goal.ts
+│   │   ├── 📄 student-loan.ts
+│   │   ├── 📄 amortization.ts
+│   │   ├── 📄 rent-vs-buy.ts
+│   │   ├── 📄 net-worth.ts
+│   │   ├── 📄 budget.ts
+│   │   ├── 📄 inflation.ts
+│   │   ├── 📄 simple-interest.ts
+│   │   ├── 📄 home-affordability.ts
+│   │   ├── 📄 refinance.ts
+│   │   ├── 📄 emergency-fund.ts
+│   │   ├── 📄 salary.ts
+│   │   └── 📄 index.ts
+│   │
+│   ├── 📁 utils/
+│   │   ├── 📄 formatters.ts
+│   │   ├── 📄 validators.ts
+│   │   ├── 📄 constants.ts
+│   │   └── 📄 export.ts                   🆕
+│   │
+│   └── 📄 seo.ts
+│
+├── 📁 data/
+│   ├── 📄 calculators.ts
+│   ├── 📄 faqs.ts
+│   ├── 📄 metadata.ts
+│   ├── 📄 features.ts
+│   ├── 📄 navigation.ts
+│   └── 📄 countries.ts                   🆕
+│
+├── 📁 types/
+│   ├── 📄 calculator.ts
+│   ├── 📄 seo.ts
+│   └── 📄 api.ts
+│
+├── 📁 hooks/
+│   ├── 📄 useCalculator.ts
+│   ├── 📄 useDebounce.ts
+│   ├── 📄 useLocalStorage.ts
+│   ├── 📄 useComparison.ts               🆕
+│   └── 📄 useExport.ts                   🆕
+│
+├── 📁 public/
+│   ├── 📄 favicon.ico
+│   ├── 📄 logo.svg
+│   ├── 📄 og-image.png
+│   │
+│   ├── 📁 icons/
+│   │   ├── 📄 mortgage.svg
+│   │   ├── 📄 loan.svg
+│   │   ├── 📄 compound-interest.svg
+│   │   ├── 📄 car-loan.svg
+│   │   ├── 📄 retirement.svg
+│   │   ├── 📄 credit-card.svg
+│   │   ├── 📄 investment.svg
+│   │   ├── 📄 debt-payoff.svg
+│   │   ├── 📄 savings-goal.svg
+│   │   ├── 📄 student-loan.svg
+│   │   ├── 📄 amortization.svg
+│   │   ├── 📄 rent-vs-buy.svg
+│   │   ├── 📄 net-worth.svg
+│   │   ├── 📄 budget.svg
+│   │   ├── 📄 inflation.svg
+│   │   ├── 📄 simple-interest.svg
+│   │   ├── 📄 home-affordability.svg
+│   │   ├── 📄 refinance.svg
+│   │   ├── 📄 emergency-fund.svg
+│   │   └── 📄 salary.svg
+│   │
+│   └── 📁 images/
+│       ├── 📄 hero-bg.svg
+│       └── 📁 features/
+│           ├── 📄 fast.svg
+│           ├── 📄 free.svg
+│           └── 📄 secure.svg
+│
+├── 📁 styles/
+│   └── 📄 charts.css
+│
+├── 📁 config/
+│   ├── 📄 site.ts
+│   ├── 📄 adsense.ts
+│   └── 📄 analytics.ts
+│
+├── 📄 next.config.ts
+├── 📄 postcss.config.mjs
+├── 📄 tsconfig.json
+├── 📄 package.json
+├── 📄 package-lock.json
+├── 📄 .env.local
+├── 📄 .env.example
+├── 📄 .gitignore
+├── 📄 .eslintrc.json
+├── 📄 README.md
+└── 📄 LICENSE

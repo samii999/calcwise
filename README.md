@@ -1,36 +1,166 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## ✅ File 37: `README.md`
 
-## Getting Started
+**Kya karegi?** Project documentation for developers.
 
-First, run the development server:
+```markdown
+# CalcWise - Free Financial Calculators
+
+![CalcWise Logo](https://calcwise.com/og-image.png)
+
+**CalcWise** is a free, fast, and beautifully designed financial calculator website built with Next.js and hosted on Vercel. It targets high-income English-speaking audiences — primarily USA, UK, Canada and Australia — to earn premium AdSense RPM.
+
+## 🌟 Features
+
+- **20+ Financial Calculators** - Mortgage, Loan, Compound Interest, Retirement, Credit Card Payoff, Investment, Debt Payoff, Savings Goal, Student Loan, Amortization, Rent vs Buy, Net Worth, Budget, Inflation, Simple Interest, Home Affordability, Refinance, Emergency Fund, Salary
+- **Real-time Calculations** - Instant results as you type
+- **Beautiful Charts** - Interactive pie charts, bar graphs, and amortization tables
+- **Mobile-First Design** - Perfectly optimized for all devices
+- **100% Free** - No signup, no hidden fees
+- **Privacy First** - All calculations run in your browser
+- **Export Options** - CSV, PDF, Print, Share
+- **SEO Optimized** - Each calculator has dedicated URL and metadata
+
+## 🚀 Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Framework | Next.js 16 (App Router) |
+| Styling | Tailwind CSS v4 |
+| Charts | Recharts v3 |
+| Hosting | Vercel (Free Tier) |
+| Language | TypeScript |
+| Ad Monetization | Google AdSense |
+
+## 📁 Project Structure
+
+```
+calcwise/
+├── app/                    # Next.js App Router
+│   ├── [calculator]/       # 20 calculator pages
+│   ├── about/              # About page
+│   ├── contact/            # Contact page
+│   ├── privacy-policy/     # Privacy Policy
+│   ├── terms/              # Terms of Use
+│   ├── api/                # API routes
+│   ├── layout.tsx          # Root layout
+│   ├── page.tsx            # Homepage
+│   ├── globals.css         # Global styles
+│   ├── sitemap.ts          # Auto-generated sitemap
+│   ├── robots.ts           # Robots.txt
+│   └── not-found.tsx       # 404 page
+├── components/             # React components
+│   ├── calculators/        # Calculator components
+│   ├── home/               # Homepage components
+│   ├── layout/             # Layout components
+│   ├── seo/                # SEO components
+│   └── ui/                 # Reusable UI components
+├── lib/                    # Business logic
+│   ├── calculators/        # Calculator math formulas
+│   └── utils/              # Utility functions
+├── data/                   # Static data
+├── types/                  # TypeScript types
+├── hooks/                  # Custom React hooks
+├── config/                 # Configuration files
+└── public/                 # Static assets
+```
+
+## 🛠️ Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/calcwise/calcwise.git
+cd calcwise
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up environment variables
+
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` with your values.
+
+### 4. Run development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 5. Build for production
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📊 Available Calculators
 
-## Learn More
+| # | Calculator | URL |
+|---|------------|-----|
+| 1 | Mortgage | `/mortgage-calculator` |
+| 2 | Loan | `/loan-calculator` |
+| 3 | Compound Interest | `/compound-interest-calculator` |
+| 4 | Car Loan | `/car-loan-calculator` |
+| 5 | Retirement | `/retirement-calculator` |
+| 6 | Credit Card Payoff | `/credit-card-payoff-calculator` |
+| 7 | Investment | `/investment-calculator` |
+| 8 | Debt Payoff | `/debt-payoff-calculator` |
+| 9 | Savings Goal | `/savings-goal-calculator` |
+| 10 | Student Loan | `/student-loan-calculator` |
+| 11 | Amortization | `/amortization-calculator` |
+| 12 | Rent vs Buy | `/rent-vs-buy-calculator` |
+| 13 | Net Worth | `/net-worth-calculator` |
+| 14 | Budget | `/budget-calculator` |
+| 15 | Inflation | `/inflation-calculator` |
+| 16 | Simple Interest | `/simple-interest-calculator` |
+| 17 | Home Affordability | `/home-affordability-calculator` |
+| 18 | Refinance | `/refinance-calculator` |
+| 19 | Emergency Fund | `/emergency-fund-calculator` |
+| 20 | Salary | `/salary-calculator` |
 
-To learn more about Next.js, take a look at the following resources:
+## 📈 Monetization
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Google AdSense** - Auto ads + manual placement
+- **Estimated RPM** - $10 – $30 per 1,000 USA visitors
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📝 License
 
-## Deploy on Vercel
+MIT License - see [LICENSE](LICENSE) file for details.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🤝 Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## 📞 Contact
+
+- Email: contact@calcwise.com
+- Twitter: [@calcwise](https://twitter.com/calcwise)
+
+---
+
+**Made with ❤️ by CalcWise Team**
+```
+
+---
+
+## ✅ File 37 Complete!
+
+| File | Status |
+|------|--------|
+| `README.md` | ✅ |
+
+---
+
+## 🚀 Next?
+
+**Batao - agla file kaunsa banayen?** 💻
+
+1. `LICENSE` (MIT license)
+2. `app/globals.css` (update styles)
+3. `.eslintrc.json` (ESLint config)
