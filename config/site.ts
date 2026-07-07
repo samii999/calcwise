@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: 'CalcWise',
   description: 'Free financial calculators for everyone. Smart calculations, smarter decisions.',
-  url: 'https://calcwise.com',
+  url: 'https://www.calcwisepro.me',
   author: 'CalcWise',
   keywords: [
     'financial calculator',
@@ -15,7 +15,7 @@ export const siteConfig = {
     'budget calculator',
     'debt calculator',
   ],
-  email: 'contact@calcwise.com',
+  email: 'contact@calcwisepro.me',
   year: new Date().getFullYear(),
   social: {
     twitter: '@calcwise',

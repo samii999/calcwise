@@ -174,25 +174,27 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
       return items
     }
 
-    // 4. Growth (Compound Interest, Savings Goal)
+    // 4. Growth (Compound Interest, Savings Goal) - FIX: compute growth from final balance
     if (isGrowth) {
       const totalContributions = validData.reduce((sum, item) => sum + (item.contributions || 0), 0)
-      const totalInterest = validData.reduce((sum, item) => sum + (item.interest || 0), 0)
+      const finalBalance = validData[validData.length - 1]?.balance || 0
+      const growth = Math.max(finalBalance - totalContributions, 0) // avoid negative if data is incomplete
       const items = []
       if (totalContributions > 0) items.push({ name: 'Contributions', value: Math.round(totalContributions) })
-      if (totalInterest > 0) items.push({ name: 'Interest Earned', value: Math.round(totalInterest) })
+      if (growth > 0) items.push({ name: 'Interest Earned', value: Math.round(growth) })
       return items
     }
 
-    // 5. Retirement
+    // 5. Retirement - FIX: compute growth from final balance
     if (isRetirement) {
       const totalContributions = validData.reduce((sum, item) => sum + (item.contributions || 0), 0)
       const totalEmployerMatch = validData.reduce((sum, item) => sum + (item.employerMatch || 0), 0)
-      const totalReturns = validData.reduce((sum, item) => sum + (item.returns || 0), 0)
+      const finalBalance = validData[validData.length - 1]?.balance || 0
+      const growth = Math.max(finalBalance - totalContributions - totalEmployerMatch, 0)
       const items = []
       if (totalContributions > 0) items.push({ name: 'Your Contributions', value: Math.round(totalContributions) })
       if (totalEmployerMatch > 0) items.push({ name: 'Employer Match', value: Math.round(totalEmployerMatch) })
-      if (totalReturns > 0) items.push({ name: 'Growth', value: Math.round(totalReturns) })
+      if (growth > 0) items.push({ name: 'Growth', value: Math.round(growth) })
       return items
     }
 
@@ -312,7 +314,7 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
     return [{ name: 'Balance', value: Math.round(lastBalance) }]
   }, [validData, isAmortization, isInvestment, isGrowth, isRetirement, isBudget, isInflation, isRentVsBuy, isNetWorth, isRefinance, isAffordability, isEmergency, isSimpleInterest, isSalary, isDebt, monthlyBreakdown])
 
-  // ===== AREA CHART DATA =====
+  // ===== AREA CHART DATA (unchanged) =====
   const areaData = useMemo(() => {
     if (!isAmortization && !isRetirement && !isGrowth && !isInvestment && !isDebt && !isInflation && !isEmergency && !isRentVsBuy && !isRefinance) return []
 
@@ -338,7 +340,7 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
     })
   }, [validData, isAmortization, isRetirement, isGrowth, isInvestment, isDebt, isInflation, isEmergency, isRentVsBuy, isRefinance])
 
-  // ===== BAR CHART DATA =====
+  // ===== BAR CHART DATA (unchanged) =====
   const barData = useMemo(() => {
     const sliceData = validData.slice(0, 10)
     return sliceData.map((item) => {
@@ -369,7 +371,7 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
     })
   }, [validData, isAmortization, isInvestment, isRetirement, isGrowth, isBudget, isSalary, isRentVsBuy])
 
-  // ===== LINE CHART DATA =====
+  // ===== LINE CHART DATA (unchanged) =====
   const lineData = useMemo(() => {
     return validData.map((item) => ({
       period: item.year || item.month || 0,
@@ -388,7 +390,7 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
   })
   const hasLineData = lineData.length > 0 && lineData.some((item) => item.balance > 0)
 
-  // ===== GET CHART TITLE =====
+  // ===== GET CHART TITLES (unchanged) =====
   const getPieTitle = () => {
     if (monthlyBreakdown) return 'Monthly Payment Breakdown'
     if (isAmortization) return 'Payment Breakdown'

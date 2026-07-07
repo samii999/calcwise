@@ -5,7 +5,7 @@
 ```markdown
 # CalcWise - Free Financial Calculators
 
-![CalcWise Logo](https://calcwise.com/og-image.png)
+![CalcWise Logo](https://www.calcwisepro.me/og-image.png)
 
 **CalcWise** is a free, fast, and beautifully designed financial calculator website built with Next.js and hosted on Vercel. It targets high-income English-speaking audiences — primarily USA, UK, Canada and Australia — to earn premium AdSense RPM.
 
@@ -139,7 +139,7 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ## 📞 Contact
 
-- Email: contact@calcwise.com
+- Email: contact@calcwisepro.me
 - Twitter: [@calcwise](https://twitter.com/calcwise)
 
 ---
