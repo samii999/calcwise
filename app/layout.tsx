@@ -5,6 +5,8 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { siteConfig } from '@/config/site'
 import '@/styles/charts.css'
+import CookieBanner from '@/components/CookieBanner'  // ← Import Cookie Banner
+import { GoogleAnalytics } from '@next/third-parties/google'  // ← Import GA
 
 // Load Inter font
 const inter = Inter({
@@ -79,7 +81,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/favicon.ico" />
         
-        {/* Google AdSense Script */}
+        {/* ✅ Google AdSense Script */}
         {process.env.NEXT_PUBLIC_ADSENSE_ID && (
           <script
             async
@@ -94,7 +96,15 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        
+        {/* ✅ Cookie Banner - Shows at bottom of page */}
+        <CookieBanner />
       </body>
+      
+      {/* ✅ Google Analytics - Loads after page hydration */}
+      {process.env.NEXT_PUBLIC_GA_ID && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+      )}
     </html>
   )
 }
