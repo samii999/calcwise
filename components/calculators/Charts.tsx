@@ -68,12 +68,6 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
   // ===== DATA TYPE DETECTION =====
   const first = validData[0]
 
-  // Amortization (Mortgage, Loan, Car Loan, Credit Card, Amortization, Student Loan, Debt Payoff)
-  const isAmortization = validData.some((item) =>
-    (item.principal !== undefined || item.payment !== undefined) &&
-    (item.interest !== undefined || item.balance !== undefined)
-  )
-
   // Investment (Investment Return)
   const isInvestment = validData.some((item) =>
     item.contributions !== undefined && item.returns !== undefined && item.dividends !== undefined
@@ -134,9 +128,17 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
     item.taxes !== undefined && item.fees !== undefined
   )
 
+  // Amortization (Mortgage, Loan, Car Loan, Credit Card, Amortization, Student Loan, Debt Payoff)
+  const isAmortization = validData.some((item) =>
+    (item.principal !== undefined || item.payment !== undefined) &&
+    (item.interest !== undefined || item.balance !== undefined)
+  ) && !isInvestment && !isRetirement && !isGrowth && !isBudget && !isSalary && !isInflation && !isRentVsBuy && !isNetWorth && !isRefinance && !isAffordability && !isEmergency && !isSimpleInterest
+
   // Debt Payoff
   const isDebt = validData.some((item) =>
-    item.totalPaid !== undefined && item.remainingBalance !== undefined
+    (item.totalPaid !== undefined || item.payment !== undefined) &&
+    (item.totalInterest !== undefined || item.interest !== undefined) &&
+    (item.remainingBalance !== undefined || item.balance !== undefined)
   )
 
   // ===== PIE CHART DATA =====
@@ -157,8 +159,18 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
       const totalPrincipal = validData.reduce((sum, item) => sum + (item.principal || 0), 0)
       const totalInterest = validData.reduce((sum, item) => sum + (item.interest || 0), 0)
       const items = []
-      if (totalPrincipal > 0) items.push({ name: 'Principal', value: Math.round(totalPrincipal) })
-      if (totalInterest > 0) items.push({ name: 'Interest', value: Math.round(totalInterest) })
+      // If we have valid principal and interest data, use it
+      if (totalPrincipal > 0 || totalInterest > 0) {
+        if (totalPrincipal > 0) items.push({ name: 'Principal', value: Math.round(totalPrincipal) })
+        if (totalInterest > 0) items.push({ name: 'Interest', value: Math.round(totalInterest) })
+      } else {
+        // Fallback to initial balance if no principal/interest data
+        const initialBalance = validData[0]?.balance || 0
+        const finalBalance = validData[validData.length - 1]?.balance || 0
+        const totalPaid = validData.reduce((sum, item) => sum + (item.payment || 0), 0)
+        if (totalPaid > 0) items.push({ name: 'Total Paid', value: Math.round(totalPaid) })
+        if (initialBalance > 0) items.push({ name: 'Initial Balance', value: Math.round(initialBalance) })
+      }
       return items.length > 0 ? items : [{ name: 'Balance', value: Math.round(validData[validData.length - 1]?.balance || 0) }]
     }
 
@@ -301,12 +313,13 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
 
     // 15. Debt Payoff
     if (isDebt) {
-      const totalPaid = validData.reduce((sum, item) => sum + (item.totalPaid || 0), 0)
-      const totalInterest = validData.reduce((sum, item) => sum + (item.totalInterest || 0), 0)
+      const totalPaid = validData.reduce((sum, item) => sum + (item.totalPaid || item.payment || 0), 0)
+      const totalInterest = validData.reduce((sum, item) => sum + (item.totalInterest || item.interest || 0), 0)
+      const totalPrincipal = validData.reduce((sum, item) => sum + (item.principal || (item.payment || item.totalPaid || 0) - (item.interest || item.totalInterest || 0)), 0)
       const items = []
-      if (totalPaid > 0) items.push({ name: 'Total Paid', value: Math.round(totalPaid) })
+      if (totalPrincipal > 0) items.push({ name: 'Principal', value: Math.round(totalPrincipal) })
       if (totalInterest > 0) items.push({ name: 'Interest', value: Math.round(totalInterest) })
-      return items
+      return items.length > 0 ? items : [{ name: 'Total Paid', value: Math.round(totalPaid) }]
     }
 
     // 16. Fallback: Balance
@@ -314,17 +327,17 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
     return [{ name: 'Balance', value: Math.round(lastBalance) }]
   }, [validData, isAmortization, isInvestment, isGrowth, isRetirement, isBudget, isInflation, isRentVsBuy, isNetWorth, isRefinance, isAffordability, isEmergency, isSimpleInterest, isSalary, isDebt, monthlyBreakdown])
 
-  // ===== AREA CHART DATA (unchanged) =====
+  // ===== AREA CHART DATA =====
   const areaData = useMemo(() => {
     if (!isAmortization && !isRetirement && !isGrowth && !isInvestment && !isDebt && !isInflation && !isEmergency && !isRentVsBuy && !isRefinance) return []
 
     let cumulative = 0
     return validData.map((item) => {
-      const val = item.interest || item.returns || 0
+      const val = item.interest || item.returns || item.totalInterest || 0
       cumulative += val
       return {
-        period: item.year || item.month || 0,
-        balance: Math.round((item.balance || 0) / 1000),
+        period: item.year || item.month || item.period || 0,
+        balance: Math.round((item.balance || item.remainingBalance || 0) / 1000),
         cumulative: Math.round(cumulative / 1000),
         ...(isInflation && item.realValue !== undefined ? {
           realValue: Math.round((item.realValue || 0) / 1000),
@@ -340,11 +353,11 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
     })
   }, [validData, isAmortization, isRetirement, isGrowth, isInvestment, isDebt, isInflation, isEmergency, isRentVsBuy, isRefinance])
 
-  // ===== BAR CHART DATA (unchanged) =====
+  // ===== BAR CHART DATA =====
   const barData = useMemo(() => {
     const sliceData = validData.slice(0, 10)
     return sliceData.map((item) => {
-      const base: any = { period: item.year || item.month || 0 }
+      const base: any = { period: item.year || item.month || item.period || 0 }
 
       if (isAmortization) {
         base.principal = Math.round((item.principal || 0) / 1000)
@@ -364,18 +377,21 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
       } else if (isRentVsBuy) {
         base.buy = Math.round((item.buyCost || 0) / 1000)
         base.rent = Math.round((item.rentCost || 0) / 1000)
+      } else if (isDebt) {
+        base.principal = Math.round(((item.principal || (item.payment || item.totalPaid || 0) - (item.interest || item.totalInterest || 0))) / 1000)
+        base.interest = Math.round((item.interest || item.totalInterest || 0) / 1000)
       } else {
-        base.value = Math.round((item.balance || 0) / 1000)
+        base.value = Math.round((item.balance || item.remainingBalance || 0) / 1000)
       }
       return base
     })
-  }, [validData, isAmortization, isInvestment, isRetirement, isGrowth, isBudget, isSalary, isRentVsBuy])
+  }, [validData, isAmortization, isInvestment, isRetirement, isGrowth, isBudget, isSalary, isRentVsBuy, isDebt])
 
-  // ===== LINE CHART DATA (unchanged) =====
+  // ===== LINE CHART DATA =====
   const lineData = useMemo(() => {
     return validData.map((item) => ({
-      period: item.year || item.month || 0,
-      balance: Math.round((item.balance || 0) / 1000),
+      period: item.year || item.month || item.period || 0,
+      balance: Math.round((item.balance || item.remainingBalance || 0) / 1000),
       ...(isInflation && item.realValue !== undefined ? {
         realValue: Math.round((item.realValue || 0) / 1000),
       } : {}),
