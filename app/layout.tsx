@@ -31,11 +31,11 @@ export const metadata: Metadata = {
   // ✅ FIXED: Next.js App Router Standard Favicon Mapping
   icons: {
     icon: [
-      { url: '/logo.svg', type: 'image/svg+xml' }
+      { url: '/favicon.svg', type: 'image/svg+xml' }
     ],
-    shortcut: '/logo.svg',
+    shortcut: '/favicon.svg',
     apple: [
-      { url: '/logo.svg', sizes: '180x180', type: 'image/svg+xml' }
+      { url: '/favicon.svg', sizes: '180x180', type: 'image/svg+xml' }
     ],
   },
 
@@ -89,9 +89,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable}`}>
       <head>
-        {/* ✅ FIXED: Corrected path and type to use logo.svg for crisp mobile displays */}
-        <link rel="icon" href="/logo.svg" type="image/svg+xml" sizes="any" />
-        <link rel="apple-touch-icon" href="/logo.svg" type="image/svg+xml" />
+        {/* ✅ FIXED: Corrected path and type to use favicon.svg for crisp mobile displays */}
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />
+        <link rel="apple-touch-icon" href="/favicon.svg" type="image/svg+xml" />
         
         {/* ✅ Google AdSense Script */}
         {process.env.NEXT_PUBLIC_ADSENSE_ID && (

@@ -41,7 +41,7 @@ export function ResultsDisplay({
   // ===== CALCULATOR DETECTION =====
   const isMortgage = results.downPaymentPercent !== undefined
   const isLoan = results.loanAmount !== undefined && results.downPaymentPercent === undefined
-  const isInvestment = results.futureValue !== undefined && results.totalReturns !== undefined
+  const isInvestment = (results.futureValue !== undefined && results.totalReturns !== undefined) || (results.netProfit !== undefined && results.cagr !== undefined)
   const isCompoundInterest = results.endingBalance !== undefined && results.interestEarned !== undefined
   const isSimpleInterest = results.interest !== undefined && results.totalAmount !== undefined
   const isRetirement = results.retirementBalance !== undefined && results.monthlyIncome !== undefined
@@ -128,6 +128,8 @@ export function ResultsDisplay({
     if (results.surplus) return results.surplus
     if (results.monthlyRate) return results.monthlyRate
     if (results.maxHomePrice) return results.maxHomePrice
+    if (results.netProfit !== undefined) return results.netProfit
+    if (results.cagr !== undefined) return results.cagr
     return 0
   }
 
@@ -952,6 +954,40 @@ export function ResultsDisplay({
           <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
             <p className="text-xs text-gray-500">CAGR</p>
             <p className="text-lg font-semibold text-secondary">{results.cagr}%</p>
+          </div>
+        )}
+
+        {results.netProfit !== undefined && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Net Profit</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.netProfit, currency)}
+            </p>
+          </div>
+        )}
+
+        {results.totalROI !== undefined && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Total ROI</p>
+            <p className="text-lg font-semibold text-secondary">{results.totalROI}%</p>
+          </div>
+        )}
+
+        {results.totalDividends !== undefined && results.totalDividends > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Total Dividends</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.totalDividends, currency)}
+            </p>
+          </div>
+        )}
+
+        {results.totalFees !== undefined && results.totalFees > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Total Fees</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.totalFees, currency)}
+            </p>
           </div>
         )}
 
