@@ -183,7 +183,7 @@ export function CalculatorForm({
 
   // Separate inputs by type
   const advancedInputs = inputs.filter((input) =>
-    ['propertyTax', 'homeInsurance', 'hoaDues', 'pmi', 'originationFee', 'compoundingFrequency', 'inflationRate'].includes(input.id)
+    ['homeInsurance', 'hoaDues', 'pmi', 'originationFee', 'compoundingFrequency', 'inflationRate'].includes(input.id)
   )
 
   const extraInputs = inputs.filter((input) =>
@@ -191,7 +191,7 @@ export function CalculatorForm({
   )
 
   const mainInputs = inputs.filter((input) =>
-  !['propertyTax', 'homeInsurance', 'hoaDues', 'pmi', 'originationFee', 'compoundingFrequency', 'inflationRate', 'extraPayment', 'extraContribution'].includes(input.id)
+  !['homeInsurance', 'hoaDues', 'pmi', 'originationFee', 'compoundingFrequency', 'inflationRate', 'extraPayment', 'extraContribution'].includes(input.id)
 )
 
   // Country input
@@ -323,7 +323,13 @@ export function CalculatorForm({
                 </label>
                 <select
                   value={values[input.id] || ''}
-                  onChange={(e) => handleChange(input.id, e.target.value)}
+                  onChange={(e) => {
+                    handleChange(input.id, e.target.value)
+                    // Call custom onChange if provided
+                    if ((input as any).onChange) {
+                      (input as any).onChange(e.target.value)
+                    }
+                  }}
                   className="w-full px-4 py-3 text-base border border-gray-200 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-white"
                 >
                   {input.options?.map((opt) => (

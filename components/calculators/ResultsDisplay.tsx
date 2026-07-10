@@ -83,8 +83,8 @@ export function ResultsDisplay({
   const isSimpleInterestTable = !!firstYearlyRow && firstYearlyRow.taxes !== undefined && firstYearlyRow.fees !== undefined
 
   // ===== MONTHLY BREAKDOWN (for mortgage/loan charts) =====
-  const monthlyBreakdown = (isMortgage || isLoan || isCarLoan) && results.principalAndInterest !== undefined ? {
-    principalInterest: results.principalAndInterest || 0,
+  const monthlyBreakdown = (isMortgage || isLoan || isCarLoan) && (results.principalAndInterest !== undefined || results.monthlyPayment !== undefined) ? {
+    principalInterest: results.principalAndInterest || results.monthlyPayment || 0,
     tax: results.propertyTaxMonthly || 0,
     insurance: results.insuranceMonthly || 0,
     pmi: results.pmiMonthly || 0,
