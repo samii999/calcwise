@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { formatCurrency } from '@/lib/utils/formatters'
 import { Charts } from './Charts'
 import { ExportOptions } from './ExportOptions'
@@ -10,6 +10,7 @@ interface ResultsDisplayProps {
   results: any
   formValues?: any
   onBiWeeklyToggle?: (value: boolean) => void
+  onAcceleratedBiWeeklyToggle?: (value: boolean) => void
   onExtraPaymentChange?: (year: number, amount: number) => void
   currency?: 'USD' | 'GBP' | 'CAD' | 'AUD' | 'EUR' | 'INR' | 'PKR'
 }
@@ -18,11 +19,23 @@ export function ResultsDisplay({
   results, 
   formValues, 
   onBiWeeklyToggle,
+  onAcceleratedBiWeeklyToggle,
   onExtraPaymentChange,
   currency = 'USD'
 }: ResultsDisplayProps) {
   const [showAmortization, setShowAmortization] = useState(false)
-  const [isBiWeekly, setIsBiWeekly] = useState(false)
+  const [isBiWeekly, setIsBiWeekly] = useState(formValues?.isBiWeekly || false)
+  const [isAcceleratedBiWeekly, setIsAcceleratedBiWeekly] = useState(formValues?.isAcceleratedBiWeekly || false)
+
+  // Sync local state with parent formValues
+  useEffect(() => {
+    if (formValues?.isBiWeekly !== undefined) {
+      setIsBiWeekly(formValues.isBiWeekly)
+    }
+    if (formValues?.isAcceleratedBiWeekly !== undefined) {
+      setIsAcceleratedBiWeekly(formValues.isAcceleratedBiWeekly)
+    }
+  }, [formValues?.isBiWeekly, formValues?.isAcceleratedBiWeekly])
 
   // ===== CHECK RESULTS =====
   if (!results || Object.keys(results).length === 0) {
@@ -82,8 +95,8 @@ export function ResultsDisplay({
   const isInflationTable = !!firstYearlyRow && firstYearlyRow.nominalValue !== undefined
   const isSimpleInterestTable = !!firstYearlyRow && firstYearlyRow.taxes !== undefined && firstYearlyRow.fees !== undefined
 
-  // ===== MONTHLY BREAKDOWN (for mortgage/loan charts) =====
-  const monthlyBreakdown = (isMortgage || isLoan || isCarLoan) && (results.principalAndInterest !== undefined || results.monthlyPayment !== undefined) ? {
+  // ===== MONTHLY BREAKDOWN (for mortgage charts only) =====
+  const monthlyBreakdown = isMortgage && (results.principalAndInterest !== undefined || results.monthlyPayment !== undefined) ? {
     principalInterest: results.principalAndInterest || results.monthlyPayment || 0,
     tax: results.propertyTaxMonthly || 0,
     insurance: results.insuranceMonthly || 0,
@@ -110,6 +123,13 @@ export function ResultsDisplay({
     setIsBiWeekly(!isBiWeekly)
     if (onBiWeeklyToggle) {
       onBiWeeklyToggle(!isBiWeekly)
+    }
+  }
+
+  const handleAcceleratedBiWeeklyToggle = () => {
+    setIsAcceleratedBiWeekly(!isAcceleratedBiWeekly)
+    if (onAcceleratedBiWeeklyToggle) {
+      onAcceleratedBiWeeklyToggle(!isAcceleratedBiWeekly)
     }
   }
 
@@ -768,6 +788,41 @@ export function ResultsDisplay({
               </p>
             </div>
           )}
+          {isBiWeekly && (
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium text-secondary">🚀 Accelerated Bi-Weekly</h4>
+                  <p className="text-sm text-gray-500">Monthly payment ÷ 2 (max savings)</p>
+                </div>
+                <button
+                  onClick={handleAcceleratedBiWeeklyToggle}
+                  className={`relative w-14 h-8 rounded-full transition-colors ${
+                    isAcceleratedBiWeekly ? 'bg-primary' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-transform ${
+                      isAcceleratedBiWeekly ? 'left-7' : 'left-1'
+                    }`}
+                  />
+                </button>
+              </div>
+              {isAcceleratedBiWeekly && results.biWeeklySavings && (
+                <div className="mt-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                  <p className="text-emerald-800 font-semibold">
+                    ⚡ Bi-Weekly Payment: <strong>{formatCurrency(results.biWeeklySavings.biWeeklyPayment, currency)}</strong>
+                  </p>
+                  <p className="text-emerald-600 text-sm">
+                    Save <strong>{formatCurrency(results.biWeeklySavings.interestSaved, currency)}</strong> in interest
+                  </p>
+                  <p className="text-emerald-600 text-sm">
+                    Finish <strong>{results.biWeeklySavings.yearsSaved} years</strong> earlier!
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -865,6 +920,29 @@ export function ResultsDisplay({
           <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
             <p className="text-xs text-gray-500">Payoff Date</p>
             <p className="text-lg font-semibold text-secondary">{results.payoffDate}</p>
+          </div>
+        )}
+
+        {results.trueAPR !== undefined && results.trueAPR > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">True APR</p>
+            <p className="text-lg font-semibold text-secondary">{results.trueAPR}%</p>
+          </div>
+        )}
+
+        {results.originationFeeAmount !== undefined && results.originationFeeAmount > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Origination Fee</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.originationFeeAmount, currency)}
+            </p>
+          </div>
+        )}
+
+        {results.paymentFrequency && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Payment Frequency</p>
+            <p className="text-lg font-semibold text-secondary">{results.paymentFrequency}</p>
           </div>
         )}
 

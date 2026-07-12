@@ -16,6 +16,7 @@ export interface MortgageInputs {
   extraPayment: number
   country: string
   isBiWeekly?: boolean
+  isAcceleratedBiWeekly?: boolean
   oneTimePayments?: { year: number; amount: number }[]
 }
 
@@ -43,6 +44,7 @@ export interface MortgageResults {
     interestSaved: number
     yearsSaved: number
     monthlyEquivalent: number
+    biWeeklyPayment: number
   }
   oneTimePaymentImpact?: {
     interestSaved: number
@@ -76,6 +78,7 @@ export function calculateMortgage(inputs: MortgageInputs): MortgageResults {
     pmi,
     extraPayment = 0,
     isBiWeekly = false,
+    isAcceleratedBiWeekly = false,
     oneTimePayments = [],
   } = inputs
 
@@ -109,6 +112,12 @@ export function calculateMortgage(inputs: MortgageInputs): MortgageResults {
       (Math.pow(1 + monthlyRate, totalPayments) - 1)
   }
 
+  // 4. Calculate Monthly Costs
+  const propertyTaxMonthly = propertyTax / 12
+  const insuranceMonthly = homeInsurance / 12
+  const pmiMonthly = (loanAmount * (pmiRate / 100)) / 12  // ✅ Using pmiRate
+  const hoaMonthly = hoaDues
+
   // 3. Bi-Weekly Calculation
   let biWeeklySavings = undefined
   let effectiveMonthlyPayment = principalAndInterest + extraPayment
@@ -116,8 +125,17 @@ export function calculateMortgage(inputs: MortgageInputs): MortgageResults {
   let effectiveTotalPayments = totalPayments
 
   if (isBiWeekly && principalAndInterest > 0) {
-    // Bi-weekly: 26 half-payments = 13 full payments per year
-    const biWeeklyPayment = (principalAndInterest + extraPayment) / 2
+    const monthlyPITI = principalAndInterest + propertyTaxMonthly + insuranceMonthly + pmiMonthly + hoaMonthly
+    let biWeeklyPayment: number
+    
+    if (isAcceleratedBiWeekly) {
+      // Accelerated Bi-Weekly: Monthly PITI / 2 (26 half-payments = 13 full payments/year)
+      biWeeklyPayment = monthlyPITI / 2
+    } else {
+      // Standard Bi-Weekly: Monthly * 12 / 26
+      biWeeklyPayment = (monthlyPITI * 12) / 26
+    }
+    
     let biWeeklyRate = interestRate / 100 / 26
 
     // ✅ Canadian bi-weekly rate
@@ -160,34 +178,45 @@ export function calculateMortgage(inputs: MortgageInputs): MortgageResults {
       interestSaved: Math.round(calculateRegularInterest(loanAmount, monthlyRate, totalPayments) - biInterest),
       yearsSaved: Math.round((totalPayments / 12 - biTotalMonths / 12) * 10) / 10,
       monthlyEquivalent: Math.round(biWeeklyPayment * 26 / 12),
+      biWeeklyPayment: Math.round(biWeeklyPayment),
     }
 
     effectiveLoanTerm = Math.ceil(biTotalMonths / 12)
     effectiveTotalPayments = biTotalMonths
   }
 
-  // 4. Calculate Monthly Costs
-  const propertyTaxMonthly = propertyTax / 12
-  const insuranceMonthly = homeInsurance / 12
-  const pmiMonthly = (loanAmount * (pmiRate / 100)) / 12  // ✅ Using pmiRate
-  const hoaMonthly = hoaDues
-
   // 5. Total Monthly Payment
-  const monthlyPayment =
+  let monthlyPayment =
     principalAndInterest +
     propertyTaxMonthly +
     insuranceMonthly +
     pmiMonthly +
     hoaMonthly
 
+  // ✅ If bi-weekly, show bi-weekly equivalent as monthly payment
+  if (isBiWeekly && biWeeklySavings) {
+    monthlyPayment = biWeeklySavings.monthlyEquivalent
+  }
+
   // 6. Amortization Schedule with Extra Payment & One-Time Payments
   const amortizationSchedule: AmortizationRow[] = []
   let balance = loanAmount
   let totalInterest = 0
   let totalPrincipal = 0
-  const totalMonthlyWithExtra = principalAndInterest + extraPayment
+  let totalMonthlyWithExtra: number
   let monthsPaid = 0
-  let totalPayoffMonths = totalPayments
+  let totalPayoffMonths: number
+  let effectivePrincipalAndInterest = principalAndInterest
+
+  // ✅ If bi-weekly, use bi-weekly payment for all calculations
+  if (isBiWeekly && biWeeklySavings) {
+    effectivePrincipalAndInterest = biWeeklySavings.monthlyEquivalent - propertyTaxMonthly - insuranceMonthly - pmiMonthly - hoaMonthly
+    totalMonthlyWithExtra = effectivePrincipalAndInterest + extraPayment
+    totalPayoffMonths = effectiveTotalPayments
+  } else {
+    totalMonthlyWithExtra = principalAndInterest + extraPayment
+    totalPayoffMonths = totalPayments
+  }
 
   // Create map for one-time payments by year
   const oneTimePaymentMap = new Map<number, number>()
@@ -246,7 +275,7 @@ export function calculateMortgage(inputs: MortgageInputs): MortgageResults {
 
     amortizationSchedule.push({
       year: year,
-      payment: Math.round((principalAndInterest + extraPayment) * 12 + (yearOneTimePayment > 0 ? yearOneTimePayment : 0)),
+      payment: Math.round((effectivePrincipalAndInterest + extraPayment) * 12 + (yearOneTimePayment > 0 ? yearOneTimePayment : 0)),
       principal: Math.round(yearPrincipal + yearOneTimePayment),
       interest: Math.round(yearInterest),
       balance: Math.round(Math.max(0, balance)),
@@ -299,7 +328,7 @@ export function calculateMortgage(inputs: MortgageInputs): MortgageResults {
 
   return {
     monthlyPayment: Math.round(monthlyPayment),
-    principalAndInterest: Math.round(principalAndInterest),
+    principalAndInterest: Math.round(effectivePrincipalAndInterest),
     totalInterest: Math.round(totalInterest),
     totalPayment: Math.round(totalPayment),
     loanAmount: Math.round(loanAmount),

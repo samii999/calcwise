@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Tooltip } from './Tooltip'
 
 interface InputFieldProps {
@@ -39,9 +40,28 @@ export function InputField({
   error,
   disabled = false,
 }: InputFieldProps) {
+  // Local state to preserve user input while typing
+  const [localValue, setLocalValue] = useState<string>('')
+  const [isFocused, setIsFocused] = useState(false)
+
+  // Sync local state with prop value when it changes from outside
+  // Only update if the user is not currently focused on the input
+  useEffect(() => {
+    if (!isFocused) {
+      if (value === undefined || value === null) {
+        setLocalValue('')
+      } else if (typeof value === 'string') {
+        setLocalValue(value)
+      } else {
+        setLocalValue(String(value))
+      }
+    }
+  }, [value, isFocused])
+
   // Handle number input change
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value
+    setLocalValue(raw)
 
     // ✅ Allow empty field
     if (raw === '') {
@@ -49,15 +69,9 @@ export function InputField({
       return
     }
 
-    // ✅ Remove leading zeros (e.g., 023 -> 23)
-    let cleaned = raw
-    if (raw.length > 1 && raw.startsWith('0') && !raw.includes('.')) {
-      cleaned = raw.replace(/^0+/, '')
-      if (cleaned === '') cleaned = '0'
-    }
-
-    const num = parseFloat(cleaned)
-    onChange(isNaN(num) ? undefined : num)
+    // ✅ Pass the raw string value to preserve user input exactly
+    // This prevents automatic value changes while typing
+    onChange(raw)
   }
 
   // Handle range input change
@@ -65,8 +79,8 @@ export function InputField({
     onChange(parseFloat(e.target.value))
   }
 
-  // ✅ Display value: show empty string for undefined/null
-  const displayValue = (value === undefined || value === null) ? '' : String(value)
+  // ✅ Display value: use local state to preserve user input while typing
+  const displayValue = localValue
 
   return (
     <div className="space-y-1.5">
@@ -129,6 +143,8 @@ export function InputField({
               type="number"
               value={displayValue}
               onChange={handleNumberChange}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
               placeholder={placeholder}
               min={min}
               max={max}

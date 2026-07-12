@@ -13,6 +13,7 @@ export default function MortgageCalculatorPage() {
   const [formValues, setFormValues] = useState<any>(null)
   const [currency, setCurrency] = useState<'USD' | 'GBP' | 'CAD' | 'AUD' | 'EUR' | 'INR' | 'PKR'>('USD')
   const [isBiWeekly, setIsBiWeekly] = useState(false)
+  const [isAcceleratedBiWeekly, setIsAcceleratedBiWeekly] = useState(false)
   const [oneTimePayments, setOneTimePayments] = useState<{ year: number; amount: number }[]>([])
   const [isPageLoaded, setIsPageLoaded] = useState(false)
   const [useManualTax, setUseManualTax] = useState(false)
@@ -54,17 +55,56 @@ export default function MortgageCalculatorPage() {
       extraPayment: values.extraPayment || 0,
       country: values.country || 'US',
       isBiWeekly: isBiWeekly,
+      isAcceleratedBiWeekly: isAcceleratedBiWeekly,
       oneTimePayments: parsedOTP,
     })
     setResults(result)
-  }, [])
+  }, [isBiWeekly, isAcceleratedBiWeekly])
 
   const handleBiWeeklyToggle = useCallback((value: boolean) => {
     setIsBiWeekly(value)
-  }, [])
+    // Trigger recalculation immediately when toggle changes
+    if (formValues) {
+      const otpInput = formValues.oneTimePayments || ''
+      let parsedOTP: { year: number; amount: number }[] = []
+      if (otpInput) {
+        try {
+          const lines = otpInput.split('\n').filter((line: string) => line.trim())
+          parsedOTP = lines.map((line: string) => {
+            const parts = line.split(',').map((p: string) => p.trim())
+            return {
+              year: parseInt(parts[0]) || 1,
+              amount: parseFloat(parts[1]) || 0,
+            }
+          }).filter((otp: any) => otp.amount > 0)
+        } catch (e) {
+          console.error('Error parsing one-time payments:', e)
+        }
+      }
 
-  // Recalculate when bi-weekly toggle changes
-  useEffect(() => {
+      const result = calculateMortgage({
+        homePrice: formValues.homePrice,
+        downPayment: formValues.downPayment,
+        downPaymentPercent: formValues.downPaymentPercent,
+        loanTerm: formValues.loanTerm,
+        interestRate: formValues.interestRate,
+        propertyTax: formValues.propertyTax || 0,
+        homeInsurance: formValues.homeInsurance || 0,
+        hoaDues: formValues.hoaDues || 0,
+        pmi: formValues.pmi || 0,
+        extraPayment: formValues.extraPayment || 0,
+        country: formValues.country || 'US',
+        isBiWeekly: value,
+        isAcceleratedBiWeekly: isAcceleratedBiWeekly,
+        oneTimePayments: parsedOTP,
+      })
+      setResults(result)
+    }
+  }, [formValues, isAcceleratedBiWeekly])
+
+  const handleAcceleratedBiWeeklyToggle = useCallback((value: boolean) => {
+    setIsAcceleratedBiWeekly(value)
+    // Trigger recalculation immediately when toggle changes
     if (formValues) {
       const otpInput = formValues.oneTimePayments || ''
       let parsedOTP: { year: number; amount: number }[] = []
@@ -96,11 +136,12 @@ export default function MortgageCalculatorPage() {
         extraPayment: formValues.extraPayment || 0,
         country: formValues.country || 'US',
         isBiWeekly: isBiWeekly,
+        isAcceleratedBiWeekly: value,
         oneTimePayments: parsedOTP,
       })
       setResults(result)
     }
-  }, [isBiWeekly])
+  }, [formValues, isBiWeekly])
 
   // ✅ Add country field back to inputs
   const mortgageInputs = useMemo(() => [
@@ -259,7 +300,7 @@ export default function MortgageCalculatorPage() {
         description="Calculate your monthly mortgage payment with taxes, insurance, PMI, HOA fees, and extra payments. Get instant results with amortization schedule and interactive charts."
         icon="🏠"
       >
-        {/* 📖 How to Use Guide - Moved to TOP */}
+        {/* 📖 How to Use Guide - SEO Optimized */}
         <div className="mb-8 bg-gradient-to-br from-teal-50 via-emerald-50 to-blue-50 rounded-2xl p-6 border border-teal-100/50 shadow-sm">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0 mt-1">
@@ -268,12 +309,15 @@ export default function MortgageCalculatorPage() {
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                How to Use This Calculator
+              <h3 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                How to Use This Mortgage Calculator
                 <span className="text-xs font-normal text-gray-500 bg-white/70 px-3 py-1 rounded-full border border-gray-200/50">
-                  4 Easy Steps
+                  Free & Accurate
                 </span>
               </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Calculate your monthly mortgage payment, estimate total costs, and explore payoff strategies with our comprehensive mortgage calculator. Perfect for homebuyers, refinancers, and anyone planning their financial future.
+              </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Step 1 */}
@@ -282,12 +326,13 @@ export default function MortgageCalculatorPage() {
                     <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center text-teal-600 font-bold text-sm group-hover:scale-110 transition-transform">
                       1
                     </div>
-                    <h4 className="font-medium text-gray-800">Enter Details</h4>
+                    <h4 className="font-medium text-gray-800">Enter Home Details</h4>
                   </div>
                   <ul className="space-y-1.5 text-xs text-gray-600">
-                    <li>• <strong>Home Price</strong> &amp; <strong>Down Payment</strong></li>
-                    <li>• <strong>Loan Term</strong> (15 or 30 years)</li>
-                    <li>• <strong>Interest Rate</strong> from your lender</li>
+                    <li>• <strong>Home Price</strong> - Total purchase price</li>
+                    <li>• <strong>Down Payment</strong> - Your upfront payment</li>
+                    <li>• <strong>Loan Term</strong> - 15, 20, or 30 years</li>
+                    <li>• <strong>Interest Rate</strong> - Current mortgage rate</li>
                   </ul>
                 </div>
 
@@ -300,9 +345,10 @@ export default function MortgageCalculatorPage() {
                     <h4 className="font-medium text-gray-800">Add Monthly Costs</h4>
                   </div>
                   <ul className="space-y-1.5 text-xs text-gray-600">
-                    <li>• <strong>Property Tax</strong> (annual amount)</li>
-                    <li>• <strong>Insurance</strong> &amp; <strong>HOA</strong> fees</li>
-                    <li>• <strong>PMI</strong> if down payment &lt; 20%</li>
+                    <li>• <strong>Property Tax</strong> - Annual tax amount</li>
+                    <li>• <strong>Home Insurance</strong> - Annual premium</li>
+                    <li>• <strong>HOA Fees</strong> - Monthly HOA dues</li>
+                    <li>• <strong>PMI</strong> - Auto-calculated if &lt;20% down</li>
                   </ul>
                 </div>
 
@@ -312,12 +358,13 @@ export default function MortgageCalculatorPage() {
                     <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold text-sm group-hover:scale-110 transition-transform">
                       3
                     </div>
-                    <h4 className="font-medium text-gray-800">Pay Off Faster</h4>
+                    <h4 className="font-medium text-gray-800">Explore Payoff Options</h4>
                   </div>
                   <ul className="space-y-1.5 text-xs text-gray-600">
-                    <li>• <strong>Extra Payment</strong> per month</li>
-                    <li>• <strong>Bi-Weekly</strong> payment option</li>
-                    <li>• <strong>One-Time</strong> lump sum payments</li>
+                    <li>• <strong>Extra Monthly Payment</strong> - Pay more monthly</li>
+                    <li>• <strong>Bi-Weekly Payments</strong> - Save interest</li>
+                    <li>• <strong>Accelerated Bi-Weekly</strong> - Max savings</li>
+                    <li>• <strong>One-Time Payments</strong> - Lump sum payments</li>
                   </ul>
                 </div>
 
@@ -327,22 +374,31 @@ export default function MortgageCalculatorPage() {
                     <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 font-bold text-sm group-hover:scale-110 transition-transform">
                       4
                     </div>
-                    <h4 className="font-medium text-gray-800">Review Results</h4>
+                    <h4 className="font-medium text-gray-800">Review Your Results</h4>
                   </div>
                   <ul className="space-y-1.5 text-xs text-gray-600">
-                    <li>• <strong>Monthly Payment</strong> breakdown</li>
-                    <li>• <strong>Amortization</strong> schedule</li>
-                    <li>• <strong>Charts</strong> &amp; payoff date</li>
+                    <li>• <strong>Monthly Payment</strong> - Complete breakdown</li>
+                    <li>• <strong>Amortization Schedule</strong> - Year-by-year</li>
+                    <li>• <strong>Interest Savings</strong> - See your savings</li>
+                    <li>• <strong>Payoff Date</strong> - When you'll be debt-free</li>
                   </ul>
                 </div>
               </div>
 
-              {/* Pro Tip Banner */}
-              <div className="mt-4 p-3 bg-gradient-to-r from-teal-500/10 to-emerald-500/10 rounded-xl border border-teal-200/50">
-                <div className="flex items-start gap-2">
-                  <span className="text-teal-500 text-lg">💡</span>
-                  <p className="text-sm text-teal-800">
-                    <strong>Pro Tip:</strong> Even an extra <strong>$100/month</strong> can save you <strong>thousands</strong> in interest and shorten your loan by several years!
+              {/* SEO Content Section */}
+              <div className="mt-4 space-y-3">
+                <div className="p-3 bg-gradient-to-r from-teal-500/10 to-emerald-500/10 rounded-xl border border-teal-200/50">
+                  <div className="flex items-start gap-2">
+                    <span className="text-teal-500 text-lg">💡</span>
+                    <p className="text-sm text-teal-800">
+                      <strong>Pro Tip:</strong> Switching to <strong>bi-weekly payments</strong> can save you thousands in interest and pay off your mortgage years earlier. Our calculator shows you exactly how much you'll save!
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="p-3 bg-white/60 rounded-xl border border-gray-200/50">
+                  <p className="text-xs text-gray-600 leading-relaxed">
+                    <strong>Why Use Our Mortgage Calculator?</strong> Our free mortgage calculator helps you estimate your monthly mortgage payment, including principal, interest, taxes, insurance, and PMI. Whether you're buying a home, refinancing, or planning your budget, our tool provides accurate calculations with detailed amortization schedules. Compare different loan terms, interest rates, and payoff strategies to make informed financial decisions.
                   </p>
                 </div>
               </div>
@@ -369,7 +425,9 @@ export default function MortgageCalculatorPage() {
               formValues={{
                 ...formValues,
                 isBiWeekly,
+                isAcceleratedBiWeekly,
                 onBiWeeklyToggle: handleBiWeeklyToggle,
+                onAcceleratedBiWeeklyToggle: handleAcceleratedBiWeeklyToggle,
               }}
               currency={currency}
             />

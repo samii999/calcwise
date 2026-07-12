@@ -93,6 +93,17 @@ export default function LoanCalculatorPage() {
       tooltip: 'Extra amount to pay each month to save interest.',
       helpText: 'Even $50/month can save thousands!',
     },
+    {
+      id: 'originationFee',
+      label: 'Origination Fee',
+      type: 'number' as const,
+      value: 0,
+      min: 0,
+      max: 10,
+      step: 0.1,
+      suffix: '%',
+      tooltip: 'Processing fee charged by lender (optional)',
+    },
   ], [])
 
   return (
@@ -102,6 +113,17 @@ export default function LoanCalculatorPage() {
         description="Calculate your monthly loan payments, total interest, and amortization schedule. Compare different loan types, payment frequencies, and see how extra payments help."
         icon="💰"
       >
+        {/* SEO-Optimized Guide */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-6 border border-blue-100">
+          <h2 className="text-xl font-bold text-gray-800 mb-3">📊 Complete Loan Calculator Guide</h2>
+          <div className="space-y-3 text-sm text-gray-700">
+            <p><strong>🎯 How to Use:</strong> Enter your loan amount, select loan type, adjust interest rate and term. Toggle payment frequency (Monthly/Bi-Weekly/Weekly) to see how it affects your payments. Add origination fees to calculate True APR.</p>
+            <p><strong>💡 Payment Frequency Impact:</strong> Bi-weekly payments can save thousands in interest and pay off loans faster. Weekly payments offer even greater savings for disciplined borrowers.</p>
+            <p><strong>📈 True APR vs. Interest Rate:</strong> The True APR includes origination fees and other costs, giving you the real cost of borrowing. Always compare APRs, not just interest rates.</p>
+            <p><strong>⚡ Extra Payments:</strong> Even small extra payments ($50-$100/month) can significantly reduce total interest and shorten your loan term by years.</p>
+            <p><strong>🏦 Loan Types:</strong> Personal loans (11.5% avg), Home loans (8.5% avg), Car loans (9.5% avg), Education loans (8.0% avg). Rates vary by credit score and lender.</p>
+          </div>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-3">
             <CalculatorForm 

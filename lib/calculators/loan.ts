@@ -409,14 +409,44 @@ function calculateTrueAPR(
 ): number {
   if (loanAmount === 0 || monthlyPayment === 0) return 0
 
-  const totalPaid = monthlyPayment * totalPeriods
-  const totalInterest = totalPaid - loanAmount
-  const totalFees = originationFee
-  const totalCost = totalInterest + totalFees
-  const years = totalPeriods / periodsPerYear
+  const netLoanAmount = loanAmount - originationFee
+  if (netLoanAmount <= 0) return 0
 
-  if (years === 0) return 0
-
-  const apr = (totalCost / loanAmount) / years * 100
+  // Use Newton-Raphson method to solve for APR (IRR)
+  // APR is the rate that makes PV of payments = net loan amount
+  const maxIterations = 100
+  const tolerance = 1e-6
+  let rate = 0.1 // Initial guess (10% annual)
+  
+  for (let i = 0; i < maxIterations; i++) {
+    // Calculate present value of payments at current rate
+    let pv = 0
+    const periodicRate = rate / periodsPerYear
+    
+    for (let period = 1; period <= totalPeriods; period++) {
+      pv += monthlyPayment / Math.pow(1 + periodicRate, period)
+    }
+    
+    // Calculate derivative
+    let derivative = 0
+    for (let period = 1; period <= totalPeriods; period++) {
+      derivative -= (period * monthlyPayment) / Math.pow(1 + periodicRate, period + 1)
+    }
+    
+    // Newton-Raphson step
+    const error = pv - netLoanAmount
+    if (Math.abs(error) < tolerance) break
+    
+    if (Math.abs(derivative) < tolerance) break
+    
+    rate = rate - error / derivative
+    
+    // Keep rate in reasonable bounds
+    if (rate < 0) rate = 0.01
+    if (rate > 1) rate = 0.99
+  }
+  
+  // Convert to annual percentage rate
+  const apr = rate * 100
   return Math.round(apr * 100) / 100
 }

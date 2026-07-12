@@ -147,14 +147,14 @@ export function CalculatorForm({
           newValues.downPaymentPercent = Math.round((downPayment / homePrice) * 1000) / 10
         }
         const percent = newValues.downPaymentPercent || 0
-        newValues.pmi = percent < 20 ? 0.7 : 0
+        newValues.pmi = percent < 20 ? 0.5 : 0
       }
 
       if (id === 'downPaymentPercent') {
         const homePrice = newValues.homePrice || 0
         const percent = newValues.downPaymentPercent || 0
         newValues.downPayment = Math.round((percent / 100) * homePrice)
-        newValues.pmi = percent < 20 ? 0.7 : 0
+        newValues.pmi = percent < 20 ? 0.5 : 0
       }
 
       // Auto-update contribution timing
