@@ -90,7 +90,11 @@ export function CalculatorForm({
     })
     return {
       ...initial,
-      country: 'US', // ✅ Added default country
+      country: 'US',
+      contributionFrequency: 'monthly',
+      compoundingFrequency: 'monthly',
+      contributionTiming: 'beginning',
+      inflationRate: 0,
     }
   })
 
@@ -622,6 +626,26 @@ export function CalculatorForm({
                   </label>
                   <div className="flex gap-2 flex-wrap">
                     <button
+                      onClick={() => handleChange('contributionFrequency', 'weekly')}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex-1 ${
+                        values.contributionFrequency === 'weekly'
+                          ? 'bg-primary text-white shadow-md'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      Weekly
+                    </button>
+                    <button
+                      onClick={() => handleChange('contributionFrequency', 'bi-weekly')}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex-1 ${
+                        values.contributionFrequency === 'bi-weekly'
+                          ? 'bg-primary text-white shadow-md'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      Bi-Weekly
+                    </button>
+                    <button
                       onClick={() => handleChange('contributionFrequency', 'monthly')}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex-1 ${
                         values.contributionFrequency === 'monthly'
@@ -710,6 +734,27 @@ export function CalculatorForm({
                       Snowball (Smallest Balance)
                     </button>
                   </div>
+                </div>
+              )}
+
+              {/* Inflation Rate (Compound Interest) */}
+              {showCompoundingFrequency && advancedInputs.some(input => input.id === 'inflationRate') && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    Annual Inflation Rate
+                  </label>
+                  <InputField
+                    id="inflationRate"
+                    label=""
+                    type="range"
+                    value={values.inflationRate || 0}
+                    onChange={(val) => handleChange('inflationRate', val)}
+                    min={0}
+                    max={10}
+                    step={0.1}
+                    suffix="%"
+                    tooltip="Expected annual inflation rate to calculate real purchasing power"
+                  />
                 </div>
               )}
 

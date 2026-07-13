@@ -9,7 +9,7 @@ export interface CompoundInterestInputs {
   annualRate: number
   years: number
   compoundFrequency: 'daily' | 'monthly' | 'quarterly' | 'semi-annually' | 'annually'
-  contributionFrequency: 'monthly' | 'annually'
+  contributionFrequency: 'weekly' | 'bi-weekly' | 'monthly' | 'annually'
   contributionTiming: 'beginning' | 'end'
   inflationRate: number
 }
@@ -45,6 +45,13 @@ const FREQUENCIES = {
   annually: 1,
 }
 
+const CONTRIBUTION_PERIODS = {
+  weekly: 52,
+  'bi-weekly': 26,
+  monthly: 12,
+  annually: 1,
+}
+
 /**
  * Calculate compound interest with all features
  */
@@ -62,50 +69,44 @@ export function calculateCompoundInterest(
     inflationRate = 0,
   } = inputs
 
-  const periodsPerYear = FREQUENCIES[compoundFrequency]
-  const ratePerPeriod = annualRate / 100 / periodsPerYear
-  const totalPeriods = years * periodsPerYear
+  const compoundPeriodsPerYear = FREQUENCIES[compoundFrequency]
+  const compoundRatePerPeriod = annualRate / 100 / compoundPeriodsPerYear
+  const compoundTotalPeriods = years * compoundPeriodsPerYear
+
+  const contributionPeriodsPerYear = CONTRIBUTION_PERIODS[contributionFrequency]
+  const contributionTotalPeriods = years * contributionPeriodsPerYear
+  const contributionPerPeriod = monthlyContribution * 12 / contributionPeriodsPerYear
 
   // ===== 1. FUTURE VALUE OF PRINCIPAL =====
-  const futureValuePrincipal = principal * Math.pow(1 + ratePerPeriod, totalPeriods)
+  const futureValuePrincipal = principal * Math.pow(1 + compoundRatePerPeriod, compoundTotalPeriods)
 
   // ===== 2. FUTURE VALUE OF CONTRIBUTIONS =====
   let futureValueContributions = 0
   let totalContributions = 0
-
-  if (contributionFrequency === 'monthly') {
-    const months = years * 12
-    const monthlyRate = annualRate / 100 / 12
-    const contribution = monthlyContribution
-
-    if (monthlyRate === 0) {
-      futureValueContributions = contribution * months
-      totalContributions = contribution * months
+  
+  // Calculate future value of each contribution
+  // Each contribution compounds at the compound frequency from when it's made
+  for (let i = 0; i < contributionTotalPeriods; i++) {
+    // This contribution is made at period i (0-indexed)
+    // If timing is 'beginning', it compounds for (totalPeriods - i) periods
+    // If timing is 'end', it compounds for (totalPeriods - i - 1) periods
+    let periodsToCompound = contributionTotalPeriods - i
+    if (contributionTiming === 'end') {
+      periodsToCompound -= 1
+    }
+    
+    if (periodsToCompound <= 0) continue
+    
+    // Convert contribution periods to compound periods
+    const compoundPeriodsToCompound = periodsToCompound * (compoundPeriodsPerYear / contributionPeriodsPerYear)
+    
+    // Future value of this contribution
+    if (compoundRatePerPeriod === 0) {
+      futureValueContributions += contributionPerPeriod
     } else {
-      const factor = Math.pow(1 + monthlyRate, months)
-      // ✅ Correct formula: For beginning, multiply by (1+r) once
-      if (contributionTiming === 'beginning') {
-        futureValueContributions = contribution * (1 + monthlyRate) * ((factor - 1) / monthlyRate)
-      } else {
-        futureValueContributions = contribution * ((factor - 1) / monthlyRate)
-      }
-      totalContributions = contribution * months
+      futureValueContributions += contributionPerPeriod * Math.pow(1 + compoundRatePerPeriod, compoundPeriodsToCompound)
     }
-  } else {
-    // Annual contributions
-    const annualContribution = monthlyContribution * 12
-    const annualRateDecimal = annualRate / 100
-    let balance = 0
-
-    for (let year = 1; year <= years; year++) {
-      if (contributionTiming === 'beginning') {
-        balance = (balance + annualContribution) * (1 + annualRateDecimal)
-      } else {
-        balance = balance * (1 + annualRateDecimal) + annualContribution
-      }
-      totalContributions += annualContribution
-    }
-    futureValueContributions = balance
+    totalContributions += contributionPerPeriod
   }
 
   // ===== 3. ENDING BALANCE =====
@@ -126,27 +127,35 @@ export function calculateCompoundInterest(
   for (let year = 1; year <= years; year++) {
     let yearContributions = 0
     let yearEndBalance = currentBalance
-
-    if (contributionFrequency === 'monthly') {
-      const monthlyRate = annualRate / 100 / 12
-      for (let month = 1; month <= 12; month++) {
-        if (contributionTiming === 'beginning') {
-          yearEndBalance = (yearEndBalance + monthlyContribution) * (1 + monthlyRate)
-          yearContributions += monthlyContribution
-        } else {
-          yearEndBalance = yearEndBalance * (1 + monthlyRate) + monthlyContribution
-          yearContributions += monthlyContribution
-        }
+    
+    // Compound the existing balance for one year
+    const yearCompoundPeriods = compoundPeriodsPerYear
+    yearEndBalance = yearEndBalance * Math.pow(1 + compoundRatePerPeriod, yearCompoundPeriods)
+    
+    // Add contributions made during this year
+    const yearStartContributionIndex = (year - 1) * contributionPeriodsPerYear
+    const yearEndContributionIndex = year * contributionPeriodsPerYear
+    
+    for (let i = yearStartContributionIndex; i < yearEndContributionIndex; i++) {
+      // This contribution is made at period i
+      // Calculate how many compound periods it has within this year
+      let periodsToCompound = yearEndContributionIndex - i
+      if (contributionTiming === 'end') {
+        periodsToCompound -= 1
       }
-    } else {
-      const annualRateDecimal = annualRate / 100
-      const annualContribution = monthlyContribution * 12
-      if (contributionTiming === 'beginning') {
-        yearEndBalance = (yearEndBalance + annualContribution) * (1 + annualRateDecimal)
+      
+      if (periodsToCompound <= 0) continue
+      
+      // Convert contribution periods to compound periods
+      const compoundPeriodsToCompound = periodsToCompound * (compoundPeriodsPerYear / contributionPeriodsPerYear)
+      
+      // Future value of this contribution by end of year
+      if (compoundRatePerPeriod === 0) {
+        yearEndBalance += contributionPerPeriod
       } else {
-        yearEndBalance = yearEndBalance * (1 + annualRateDecimal) + annualContribution
+        yearEndBalance += contributionPerPeriod * Math.pow(1 + compoundRatePerPeriod, compoundPeriodsToCompound)
       }
-      yearContributions = annualContribution
+      yearContributions += contributionPerPeriod
     }
 
     const yearInterest = yearEndBalance - currentBalance - yearContributions
@@ -169,41 +178,29 @@ export function calculateCompoundInterest(
   if (monthlyContribution > 0) {
     const extraContribution = Math.round(monthlyContribution * 0.25)
 
-    // Calculate directly without recursion
+    // Calculate directly without recursion using same logic as main calculation
     const extraMonthlyContribution = monthlyContribution + extraContribution
+    const extraContributionPerPeriod = extraMonthlyContribution * 12 / contributionPeriodsPerYear
     let extraFutureValue = 0
 
-    if (contributionFrequency === 'monthly') {
-      const months = years * 12
-      const monthlyRate = annualRate / 100 / 12
-      const contribution = extraMonthlyContribution
-
-      if (monthlyRate === 0) {
-        extraFutureValue = contribution * months
+    for (let i = 0; i < contributionTotalPeriods; i++) {
+      let periodsToCompound = contributionTotalPeriods - i
+      if (contributionTiming === 'end') {
+        periodsToCompound -= 1
+      }
+      
+      if (periodsToCompound <= 0) continue
+      
+      const compoundPeriodsToCompound = periodsToCompound * (compoundPeriodsPerYear / contributionPeriodsPerYear)
+      
+      if (compoundRatePerPeriod === 0) {
+        extraFutureValue += extraContributionPerPeriod
       } else {
-        const factor = Math.pow(1 + monthlyRate, months)
-        // ✅ Same correction here
-        if (contributionTiming === 'beginning') {
-          extraFutureValue = contribution * (1 + monthlyRate) * ((factor - 1) / monthlyRate)
-        } else {
-          extraFutureValue = contribution * ((factor - 1) / monthlyRate)
-        }
+        extraFutureValue += extraContributionPerPeriod * Math.pow(1 + compoundRatePerPeriod, compoundPeriodsToCompound)
       }
-    } else {
-      const annualContribution = extraMonthlyContribution * 12
-      const annualRateDecimal = annualRate / 100
-      let balance = 0
-      for (let year = 1; year <= years; year++) {
-        if (contributionTiming === 'beginning') {
-          balance = (balance + annualContribution) * (1 + annualRateDecimal)
-        } else {
-          balance = balance * (1 + annualRateDecimal) + annualContribution
-        }
-      }
-      extraFutureValue = balance
     }
 
-    const extraFutureValuePrincipal = principal * Math.pow(1 + ratePerPeriod, totalPeriods)
+    const extraFutureValuePrincipal = principal * Math.pow(1 + compoundRatePerPeriod, compoundTotalPeriods)
     const extraEndingBalance = extraFutureValuePrincipal + extraFutureValue
     const extraGrowth = extraEndingBalance - endingBalance
 
