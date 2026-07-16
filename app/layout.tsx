@@ -31,9 +31,10 @@ export const metadata: Metadata = {
   // ✅ FIXED: Next.js App Router Standard Favicon Mapping
   icons: {
     icon: [
+      { url: '/favicon.ico', sizes: '32x32' },
       { url: '/favicon.svg', type: 'image/svg+xml' }
     ],
-    shortcut: '/favicon.svg',
+    shortcut: '/favicon.ico',
     apple: [
       { url: '/favicon.svg', sizes: '180x180', type: 'image/svg+xml' }
     ],
@@ -90,6 +91,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable}`}>
       <head>
         {/* ✅ FIXED: Corrected path and type to use favicon.svg for crisp mobile displays */}
+        <link rel="icon" href="/favicon.ico" sizes="32x32" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />
         <link rel="apple-touch-icon" href="/favicon.svg" type="image/svg+xml" />
         
