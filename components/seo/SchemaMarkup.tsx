@@ -105,8 +105,8 @@ export function createOrganizationSchema(
     logo,
     description,
     sameAs: [
-      'https://twitter.com/calcwise',
-      'https://github.com/calcwise',
+      'https://twitter.com/calcwisepro',
+      'https://github.com/calcwisepro',
     ],
   }
 }

@@ -3,11 +3,11 @@
 **Kya karegi?** Project documentation for developers.
 
 ```markdown
-# CalcWise - Free Financial Calculators
+# calcwisepro - Free Financial Calculators
 
-![CalcWise Logo](https://www.calcwisepro.me/og-image.png)
+![calcwisepro Logo](https://www.calcwisepro.me/og-image.png)
 
-**CalcWise** is a free, fast, and beautifully designed financial calculator website built with Next.js and hosted on Vercel. It targets high-income English-speaking audiences — primarily USA, UK, Canada and Australia — to earn premium AdSense RPM.
+**calcwisepro** is a free, fast, and beautifully designed financial calculator website built with Next.js and hosted on Vercel. It targets high-income English-speaking audiences — primarily USA, UK, Canada and Australia — to earn premium AdSense RPM.
 
 ## 🌟 Features
 
@@ -34,7 +34,7 @@
 ## 📁 Project Structure
 
 ```
-calcwise/
+calcwisepro/
 ├── app/                    # Next.js App Router
 │   ├── [calculator]/       # 20 calculator pages
 │   ├── about/              # About page
@@ -69,8 +69,8 @@ calcwise/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/calcwise/calcwise.git
-cd calcwise
+git clone https://github.com/calcwisepro/calcwisepro.git
+cd calcwisepro
 ```
 
 ### 2. Install dependencies
@@ -140,11 +140,11 @@ Contributions are welcome! Please open an issue or submit a pull request.
 ## 📞 Contact
 
 - Email: contact@calcwisepro.me
-- Twitter: [@calcwise](https://twitter.com/calcwise)
+- Twitter: [@calcwisepro](https://twitter.com/calcwisepro)
 
 ---
 
-**Made with ❤️ by CalcWise Team**
+**Made with ❤️ by calcwisepro Team**
 ```
 
 ---

@@ -87,7 +87,7 @@ export function useLocalStorage<T>(
  */
 export function useCalculatorStorage<T>(calculatorId: string, initialValues: T) {
   const [storedValues, setStoredValues, clearStoredValues] = useLocalStorage<T>(
-    `calcwise_${calculatorId}`,
+    `calcwisepro_${calculatorId}`,
     initialValues
   )
 

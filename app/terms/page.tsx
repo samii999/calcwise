@@ -2,9 +2,9 @@ import Link from 'next/link'
 import { siteConfig } from '@/config/site'
 
 export const metadata = {
-  title: 'Terms of Use - CalcWise',
+  title: 'Terms of Use - calcwisepro',
   description:
-    'Read CalcWise terms of use. Understand the terms and conditions for using our free financial calculators.',
+    'Read calcwisepro terms of use. Understand the terms and conditions for using our free financial calculators.',
 }
 
 export default function TermsPage() {
@@ -22,14 +22,14 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-secondary mb-3">1. Acceptance of Terms</h2>
             <p>
-              By using CalcWise, you agree to these Terms of Use. If you do not agree, please do not use our website.
+              By using calcwisepro, you agree to these Terms of Use. If you do not agree, please do not use our website.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-secondary mb-3">2. Free Service</h2>
             <p>
-              CalcWise provides free financial calculators. No payment is required for any of our tools. 
+              calcwisepro provides free financial calculators. No payment is required for any of our tools. 
               We reserve the right to modify or discontinue any feature without prior notice.
             </p>
           </section>
@@ -62,7 +62,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-secondary mb-3">5. Intellectual Property</h2>
             <p>
-              All content on CalcWise, including text, graphics, code, and design, is owned by CalcWise 
+              All content on calcwisepro, including text, graphics, code, and design, is owned by calcwisepro 
               and protected by copyright laws. You may not reproduce, distribute, or modify our content 
               without permission.
             </p>
@@ -71,7 +71,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-secondary mb-3">6. Advertising</h2>
             <p>
-              CalcWise displays advertisements to keep our service free. We use Google AdSense and 
+              calcwisepro displays advertisements to keep our service free. We use Google AdSense and 
               other ad networks. We are not responsible for the content of advertisements.
             </p>
           </section>
@@ -79,7 +79,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-secondary mb-3">7. Limitation of Liability</h2>
             <p>
-              CalcWise is provided "as is" without warranties of any kind. We are not liable for any 
+              calcwisepro is provided "as is" without warranties of any kind. We are not liable for any 
               damages arising from the use of our calculators or website.
             </p>
           </section>
@@ -112,7 +112,7 @@ export default function TermsPage() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-100 text-center text-sm text-gray-400">
-          <p>© {new Date().getFullYear()} CalcWise. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} calcwisepro. All rights reserved.</p>
         </div>
       </div>
     </div>

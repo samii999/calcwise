@@ -18,7 +18,7 @@ export function Header() {
           <Link href="/" className="flex items-center group">
             <Image
               src="/logo.svg"
-              alt="CalcWise"
+              alt="calcwisepro"
               width={80}
               height={80}
               className="w-20 h-20 transition-transform group-hover:scale-110 flex-shrink-0 drop-shadow-lg"

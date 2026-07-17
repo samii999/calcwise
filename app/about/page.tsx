@@ -2,9 +2,9 @@ import Link from 'next/link'
 import { siteConfig } from '@/config/site'
 
 export const metadata = {
-  title: 'About Us - Free Financial Calculators | CalcWise',
+  title: 'About Us - Free Financial Calculators | calcwisepro',
   description:
-    'Learn about CalcWise - our mission to provide free, accurate financial calculators for everyone. No signup, no hidden fees, just smart financial tools.',
+    'Learn about calcwisepro - our mission to provide free, accurate financial calculators for everyone. No signup, no hidden fees, just smart financial tools.',
 }
 
 export default function AboutPage() {
@@ -13,7 +13,7 @@ export default function AboutPage() {
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-4">
-          About <span className="gradient-text">CalcWise</span>
+          About <span className="gradient-text">calcwisepro</span>
         </h1>
         <p className="text-lg text-gray-500 max-w-2xl mx-auto">
           Smart Calculations, Smarter Decisions
@@ -24,7 +24,7 @@ export default function AboutPage() {
       <div className="bg-white rounded-2xl p-8 shadow-card border border-gray-100 mb-8">
         <h2 className="text-2xl font-bold text-secondary mb-4">Our Mission</h2>
         <p className="text-gray-600 leading-relaxed">
-          At CalcWise, we believe that everyone deserves access to accurate financial tools 
+          At calcwisepro, we believe that everyone deserves access to accurate financial tools 
           without paying a penny. Our mission is to provide free, fast, and reliable 
           financial calculators that help you make smarter decisions about your money.
         </p>

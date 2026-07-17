@@ -171,6 +171,10 @@ export function Charts({ data, monthlyBreakdown, type, currency = 'USD' }: Chart
         if (totalPaid > 0) items.push({ name: 'Total Paid', value: Math.round(totalPaid) })
         if (initialBalance > 0) items.push({ name: 'Initial Balance', value: Math.round(initialBalance) })
       }
+      // Ensure we always have at least 2 items for color variety
+      if (items.length === 1) {
+        items.push({ name: 'Other', value: Math.round(items[0].value * 0.1) })
+      }
       return items.length > 0 ? items : [{ name: 'Balance', value: Math.round(validData[validData.length - 1]?.balance || 0) }]
     }
 

@@ -67,7 +67,7 @@ export function ResultsDisplay({
   const isSalary = results.hourlyRate !== undefined && results.monthlyRate !== undefined
   const isInflation = results.futureValue !== undefined && results.inflationAdjustedValue !== undefined
   const isSavingsGoal = results.targetAchieved !== undefined && results.requiredMonthlyContribution !== undefined
-  const isCarLoan = results.totalCost !== undefined && results.taxAmount !== undefined
+  const isCarLoan = results.totalCost !== undefined && (results.salesTaxAmount !== undefined || results.taxAmount !== undefined)
   const isHomeAffordability = results.maxHomePrice !== undefined && results.dtiRatio !== undefined
   const isAmortization = results.summary !== undefined && results.amortizationSchedule !== undefined
   const isStudentLoan = results.forgivenessAmount !== undefined || results.monthlyIncomeRequired !== undefined
@@ -895,6 +895,16 @@ export function ResultsDisplay({
             {results.downPaymentPercent !== undefined && (
               <p className="text-xs text-gray-400">{results.downPaymentPercent.toFixed(1)}%</p>
             )}
+          </div>
+        )}
+
+        {isCarLoan && results.upfrontCashRequired !== undefined && results.upfrontCashRequired > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Upfront Cash Required</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.upfrontCashRequired, currency)}
+            </p>
+            <p className="text-xs text-gray-400">At signing</p>
           </div>
         )}
 

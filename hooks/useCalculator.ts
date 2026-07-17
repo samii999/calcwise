@@ -36,7 +36,7 @@ export function useCalculator<T extends Record<string, any>>(
 
   // Local storage for saving inputs
   const [savedInputs, saveInputs, clearSavedInputs] = useLocalStorage<T>(
-    storageKey || `calcwise_${Object.keys(initialInputs).join('_')}`,
+    storageKey || `calcwisepro_${Object.keys(initialInputs).join('_')}`,
     initialInputs
   )
 

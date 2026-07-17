@@ -38,7 +38,7 @@ export function Features() {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-3">
-            Why Choose <span className="gradient-text">CalcWise</span>
+            Why Choose <span className="gradient-text">calcwisepro</span>
           </h2>
           <p className="text-gray-500 max-w-2xl mx-auto">
             Everything you need to make smarter financial decisions. Fast, free, and private.

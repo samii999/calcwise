@@ -2,9 +2,9 @@ import Link from 'next/link'
 import { siteConfig } from '@/config/site'
 
 export const metadata = {
-  title: 'Privacy Policy - CalcWise',
+  title: 'Privacy Policy - calcwisepro',
   description:
-    'Read CalcWise privacy policy. We respect your privacy and never store your financial data.',
+    'Read calcwisepro privacy policy. We respect your privacy and never store your financial data.',
 }
 
 export default function PrivacyPolicyPage() {
@@ -22,7 +22,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-xl font-semibold text-secondary mb-3">1. Introduction</h2>
             <p>
-              At CalcWise, we take your privacy seriously. This Privacy Policy explains how we collect, 
+              At calcwisepro, we take your privacy seriously. This Privacy Policy explains how we collect, 
               use, and protect your personal information when you visit our website.
             </p>
           </section>
@@ -50,7 +50,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-xl font-semibold text-secondary mb-3">4. Cookies</h2>
             <p>
-              CalcWise uses cookies to enhance your browsing experience. These include:
+              calcwisepro uses cookies to enhance your browsing experience. These include:
             </p>
             <ul className="list-disc list-inside space-y-1 pl-4 mt-2">
               <li><strong>Essential Cookies:</strong> Required for basic functionality</li>
@@ -111,7 +111,7 @@ export default function PrivacyPolicyPage() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-100 text-center text-sm text-gray-400">
-          <p>© {new Date().getFullYear()} CalcWise. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} calcwisepro. All rights reserved.</p>
         </div>
       </div>
     </div>

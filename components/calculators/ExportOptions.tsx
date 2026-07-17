@@ -267,7 +267,7 @@ export function ExportOptions({ data, results, title }: ExportOptionsProps) {
         doc.setFontSize(8)
         doc.setTextColor(150)
         doc.text(
-          `CalcWise - ${title} | Page ${i} of ${pageCount}`,
+          `calcwisepro - ${title} | Page ${i} of ${pageCount}`,
           14,
           doc.internal.pageSize.getHeight() - 10
         )

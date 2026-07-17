@@ -95,6 +95,12 @@ export function CalculatorForm({
       compoundingFrequency: 'monthly',
       contributionTiming: 'beginning',
       inflationRate: 0,
+      // Ensure no mortgage defaults interfere with car loan
+      homePrice: 0,
+      propertyTax: 0,
+      homeInsurance: 0,
+      hoaDues: 0,
+      pmi: 0,
     }
   })
 
@@ -154,11 +160,28 @@ export function CalculatorForm({
         newValues.pmi = percent < 20 ? 0.5 : 0
       }
 
+      // Auto-update down payment percentage for car loan (only if no homePrice present)
+      if ((id === 'vehiclePrice' || id === 'downPayment') && !newValues.homePrice) {
+        const vehiclePrice = newValues.vehiclePrice || 0
+        const downPayment = newValues.downPayment || 0
+        if (vehiclePrice > 0) {
+          newValues.downPaymentPercent = Math.round((downPayment / vehiclePrice) * 1000) / 10
+        }
+      }
+
       if (id === 'downPaymentPercent') {
-        const homePrice = newValues.homePrice || 0
         const percent = newValues.downPaymentPercent || 0
-        newValues.downPayment = Math.round((percent / 100) * homePrice)
-        newValues.pmi = percent < 20 ? 0.5 : 0
+        const homePrice = newValues.homePrice || 0
+        const vehiclePrice = newValues.vehiclePrice || 0
+        
+        // Only update down payment if we have a valid price to calculate from
+        // Prioritize homePrice for mortgages (default behavior)
+        if (homePrice > 0) {
+          newValues.downPayment = Math.round((percent / 100) * homePrice)
+          newValues.pmi = percent < 20 ? 0.5 : 0
+        } else if (vehiclePrice > 0) {
+          newValues.downPayment = Math.round((percent / 100) * vehiclePrice)
+        }
       }
 
       // Auto-update contribution timing

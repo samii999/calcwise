@@ -1,8 +1,8 @@
 export const siteConfig = {
-  name: 'CalcWise',
+  name: 'CalcWisePro',
   description: 'Free financial calculators for everyone. Smart calculations, smarter decisions.',
   url: 'https://www.calcwisepro.me',
-  author: 'CalcWise',
+  author: 'CalcWisePro',
   keywords: [
     'financial calculator',
     'free calculator',
@@ -18,8 +18,8 @@ export const siteConfig = {
   email: 'contact@calcwisepro.me',
   year: new Date().getFullYear(),
   social: {
-    twitter: '@calcwise',
-    github: 'calcwise',
+    twitter: '@calcwisepro',
+    github: 'calcwisepro',
   },
   adsense: {
     publisherId: process.env.NEXT_PUBLIC_ADSENSE_ID || '',

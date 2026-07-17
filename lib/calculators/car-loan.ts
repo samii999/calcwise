@@ -8,13 +8,15 @@ export interface CarLoanInputs {
   downPayment: number
   downPaymentPercent: number
   tradeInValue: number
+  tradeInOwed: number // Remaining loan balance on trade-in vehicle
   interestRate: number
   loanTerm: number // in years
   salesTax: number // percentage, e.g., 6.25 for 6.25%
   registrationFees: number
-  warrantyCost: number
-  warrantyRollIn: boolean
+  dealerFees: number // Dealer documentation/processing fee
+  feeCapitalization: boolean // Roll fees into loan?
   extraPayment: number
+  biWeeklyMode: boolean // Accelerated bi-weekly payment mode
   country: string
 }
 
@@ -28,6 +30,7 @@ export interface CarLoanResults {
   tradeInValue: number
   salesTaxAmount: number
   totalCost: number // Real-world asset out-of-pocket expense tracking
+  upfrontCashRequired: number // Cash required at signing when fees are not capitalized
   payoffDate: string
   extraPaymentSavings: number
   extraPayoffMonths: number
@@ -55,29 +58,45 @@ export function calculateCarLoan(inputs: CarLoanInputs): CarLoanResults {
     downPayment,
     downPaymentPercent,
     tradeInValue = 0,
+    tradeInOwed = 0,
     interestRate,
     loanTerm,
     salesTax = 0,
     registrationFees = 0,
-    warrantyCost = 0,
-    warrantyRollIn = false,
+    dealerFees = 0,
+    feeCapitalization = false,
     extraPayment = 0,
+    biWeeklyMode = false,
     country = 'US',
   } = inputs
 
   // ===== 1. CALCULATE HIGH-PRECISION LOAN BASE PRINCIPAL =====
+  // Use the provided down payment value directly, don't recalculate from percentage
   const downPaymentAmount = downPayment > 0 ? downPayment : vehiclePrice * (downPaymentPercent / 100)
   const actualDownPaymentPercent = vehiclePrice > 0 ? (downPaymentAmount / vehiclePrice) * 100 : 0
 
-  // Standard Auto Law: Trade-In value drops down the net taxable base asset threshold
+  // Step A: Trade-In Tax Shield (Net Taxable Base)
   const taxableAmount = Math.max(0, vehiclePrice - tradeInValue)
+  
+  // Step B: Precise Sales Tax Amount
   const salesTaxAmount = taxableAmount * (salesTax / 100)
-  const warrantyAmount = warrantyRollIn ? warrantyCost : 0
-
-  const loanAmount = Math.max(0, 
-    vehiclePrice - downPaymentAmount - tradeInValue + 
-    salesTaxAmount + registrationFees + warrantyAmount
-  )
+  
+  // Step C: True Net Financed Principal (P)
+  let loanAmount: number
+  if (feeCapitalization) {
+    // Rolling fees INTO the loan
+    loanAmount = Math.max(0,
+      vehiclePrice - tradeInValue + tradeInOwed +
+      salesTaxAmount + registrationFees + dealerFees -
+      downPaymentAmount
+    )
+  } else {
+    // Paying fees UPFRONT in cash
+    loanAmount = Math.max(0,
+      vehiclePrice - tradeInValue + tradeInOwed -
+      downPaymentAmount
+    )
+  }
 
   // ===== 2. BASE MONTHLY AMORTIZATION MATH =====
   const monthlyRate = interestRate / 100 / 12
@@ -187,8 +206,14 @@ export function calculateCarLoan(inputs: CarLoanInputs): CarLoanResults {
     }
   }
 
+  // Calculate upfront cash required when fees are not capitalized
+  const upfrontCashRequired = feeCapitalization 
+    ? downPaymentAmount 
+    : downPaymentAmount + salesTaxAmount + registrationFees + dealerFees
+
   const totalFinancingPayments = amortizationSchedule.reduce((sum, row) => sum + row.payment, 0)
-  const totalCost = downPaymentAmount + tradeInValue + totalFinancingPayments + (warrantyRollIn ? 0 : warrantyCost)
+  // Total cost = down payment + all loan payments + fees (if paid upfront) - trade-in value (money you get back)
+  const totalCost = downPaymentAmount + totalFinancingPayments + (feeCapitalization ? 0 : salesTaxAmount + registrationFees + dealerFees) - tradeInValue
 
   return {
     monthlyPayment: Math.round(baseMonthlyPayment),
@@ -199,6 +224,7 @@ export function calculateCarLoan(inputs: CarLoanInputs): CarLoanResults {
     downPaymentPercent: actualDownPaymentPercent,
     tradeInValue: Math.round(tradeInValue),
     salesTaxAmount: Math.round(salesTaxAmount),
+    upfrontCashRequired: Math.round(upfrontCashRequired),
     totalCost: Math.round(totalCost),
     payoffDate: payoffDateStr,
     extraPaymentSavings,
