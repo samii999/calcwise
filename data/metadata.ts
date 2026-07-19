@@ -79,6 +79,24 @@ export const pageMetadata: Record<string, PageMetadata> = {
     ogTitle: 'Terms of Use – CalcWisePro',
     ogDescription: 'Read the terms and conditions for using CalcWisePro free financial tools.',
   },
+  blog: {
+    title: 'Financial Blog – Expert Tips & Guides | CalcWisePro',
+    description:
+      'Expert financial guides, tips, and insights on investing, real estate, loans, and personal finance. Learn how to make smarter financial decisions with CalcWisePro.',
+    keywords: [
+      'financial blog',
+      'investment tips',
+      'personal finance guides',
+      'real estate advice',
+      'loan tips',
+      'financial planning',
+      'money management',
+      'calcwisepro blog',
+    ],
+    ogTitle: 'Financial Blog – Expert Tips & Guides',
+    ogDescription:
+      'Expert financial guides, tips, and insights on investing, real estate, loans, and personal finance.',
+  },
 }
 
 // ─── Calculator Pages Metadata ─────────────────────────────────────────────

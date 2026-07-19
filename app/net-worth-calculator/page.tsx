@@ -95,6 +95,111 @@ export default function NetWorthCalculatorPage() {
         description="Calculate your net worth by adding all assets and subtracting all liabilities. Track your financial progress over time."
         icon="📒"
       >
+        {/* ✅ SEO-Optimized Guide at the TOP */}
+        <div className="mb-8 bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50 rounded-2xl p-6 border border-purple-100/50 shadow-sm">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 mt-1">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-500 rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-purple-500/25">
+                📖
+              </div>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                How to Use This Net Worth Calculator
+                <span className="text-xs font-normal text-gray-500 bg-white/70 px-3 py-1 rounded-full border border-gray-200/50">
+                  Free & Accurate
+                </span>
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Calculate your net worth by adding all assets and subtracting all liabilities. Track your financial progress over time. Perfect for personal financial planning, wealth tracking, and understanding your overall financial health.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Step 1 */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 font-bold text-sm group-hover:scale-110 transition-transform">
+                      1
+                    </div>
+                    <h4 className="font-medium text-gray-800">Add Assets</h4>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-gray-600">
+                    <li>• <strong>Cash & Savings</strong> - Bank accounts</li>
+                    <li>• <strong>Investments</strong> - Stocks, bonds, 401k</li>
+                    <li>• <strong>Real Estate</strong> - Home, rental property</li>
+                    <li>• <strong>Vehicles</strong> - Cars, boats, etc.</li>
+                  </ul>
+                </div>
+
+                {/* Step 2 */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center text-violet-600 font-bold text-sm group-hover:scale-110 transition-transform">
+                      2
+                    </div>
+                    <h4 className="font-medium text-gray-800">Add Liabilities</h4>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-gray-600">
+                    <li>• <strong>Mortgage</strong> - Home loan balance</li>
+                    <li>• <strong>Credit Cards</strong> - Card balances</li>
+                    <li>• <strong>Student Loans</strong> - Education debt</li>
+                    <li>• <strong>Auto Loans</strong> - Car loan balances</li>
+                  </ul>
+                </div>
+
+                {/* Step 3 */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-sm group-hover:scale-110 transition-transform">
+                      3
+                    </div>
+                    <h4 className="font-medium text-gray-800">Review Summary</h4>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-gray-600">
+                    <li>• <strong>Total Assets</strong> - Everything you own</li>
+                    <li>• <strong>Total Liabilities</strong> - Everything you owe</li>
+                    <li>• <strong>Net Worth</strong> - Assets - Liabilities</li>
+                    <li>• <strong>Category Breakdown</strong> - Where money is</li>
+                  </ul>
+                </div>
+
+                {/* Step 4 */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-fuchsia-100 rounded-lg flex items-center justify-center text-fuchsia-600 font-bold text-sm group-hover:scale-110 transition-transform">
+                      4
+                    </div>
+                    <h4 className="font-medium text-gray-800">Track Progress</h4>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-gray-600">
+                    <li>• <strong>Update Monthly</strong> - Track growth</li>
+                    <li>• <strong>Set Goals</strong> - Target net worth</li>
+                    <li>• <strong>Reduce Debt</strong> - Increase net worth</li>
+                    <li>• <strong>Build Wealth</strong> - Grow assets</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Pro Tip */}
+              <div className="mt-4 p-3 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-xl border border-purple-200/50">
+                <div className="flex items-start gap-2">
+                  <span className="text-purple-500 text-lg">💡</span>
+                  <p className="text-sm text-purple-800">
+                    <strong>Pro Tip:</strong> Track your net worth monthly to see your financial progress! A growing net worth means you're building wealth. Focus on increasing assets (investments, savings) and decreasing liabilities (paying off debt) to accelerate your financial freedom journey.
+                  </p>
+                </div>
+              </div>
+
+              {/* SEO Content */}
+              <div className="mt-3 p-3 bg-white/60 rounded-xl border border-gray-200/50">
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  <strong>Why Use Our Net Worth Calculator?</strong> Our free net worth calculator helps you calculate your total assets, liabilities, and net worth in one place. Whether you're tracking personal finances, planning for retirement, or building wealth, our tool provides accurate calculations with detailed category breakdowns. Track your financial progress over time and make informed decisions about saving, investing, and debt reduction.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-3">
             <CalculatorForm 

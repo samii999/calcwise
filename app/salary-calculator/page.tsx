@@ -140,6 +140,111 @@ export default function SalaryCalculatorPage() {
         description="Convert your annual salary to hourly, weekly, bi-weekly, and monthly rates. See your true hourly rate with commute and expenses factored in."
         icon="💵"
       >
+        {/* ✅ SEO-Optimized Guide at the TOP */}
+        <div className="mb-8 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 rounded-2xl p-6 border border-green-100/50 shadow-sm">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 mt-1">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-green-500/25">
+                📖
+              </div>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                How to Use This Salary to Hourly Calculator
+                <span className="text-xs font-normal text-gray-500 bg-white/70 px-3 py-1 rounded-full border border-gray-200/50">
+                  Free & Accurate
+                </span>
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Convert your annual salary to hourly, weekly, bi-weekly, and monthly rates. See your true hourly rate with commute and expenses factored in. Perfect for job offers comparison, freelance rate calculation, and understanding your true earnings.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Step 1 */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center text-green-600 font-bold text-sm group-hover:scale-110 transition-transform">
+                      1
+                    </div>
+                    <h4 className="font-medium text-gray-800">Enter Salary</h4>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-gray-600">
+                    <li>• <strong>Salary Amount</strong> - Annual or hourly</li>
+                    <li>• <strong>Mode</strong> - Annual → Hourly or vice versa</li>
+                    <li>• <strong>Hours Per Week</strong> - Your work hours</li>
+                    <li>• <strong>Weeks Per Year</strong> - Working weeks</li>
+                  </ul>
+                </div>
+
+                {/* Step 2 */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 font-bold text-sm group-hover:scale-110 transition-transform">
+                      2
+                    </div>
+                    <h4 className="font-medium text-gray-800">Add Adjustments</h4>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-gray-600">
+                    <li>• <strong>Vacation Weeks</strong> - Paid time off</li>
+                    <li>• <strong>Holiday Days</strong> - Paid holidays</li>
+                    <li>• <strong>Commute Time</strong> - Unpaid time</li>
+                    <li>• <strong>Work Expenses</strong> - Out-of-pocket costs</li>
+                  </ul>
+                </div>
+
+                {/* Step 3 */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center text-teal-600 font-bold text-sm group-hover:scale-110 transition-transform">
+                      3
+                    </div>
+                    <h4 className="font-medium text-gray-800">Calculate Rates</h4>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-gray-600">
+                    <li>• <strong>Hourly Rate</strong> - Per hour</li>
+                    <li>• <strong>Weekly Rate</strong> - Per week</li>
+                    <li>• <strong>Bi-Weekly Rate</strong> - Every 2 weeks</li>
+                    <li>• <strong>Monthly Rate</strong> - Per month</li>
+                  </ul>
+                </div>
+
+                {/* Step 4 */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60 shadow-sm hover:shadow-md transition-all duration-200 group">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-cyan-100 rounded-lg flex items-center justify-center text-cyan-600 font-bold text-sm group-hover:scale-110 transition-transform">
+                      4
+                    </div>
+                    <h4 className="font-medium text-gray-800">True Hourly Rate</h4>
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-gray-600">
+                    <li>• <strong>True Rate</strong> - After commute/expenses</li>
+                    <li>• <strong>Tax Impact</strong> - After-tax rate</li>
+                    <li>• <strong>Compare Offers</strong> - Job offers</li>
+                    <li>• <strong>Freelance Rate</strong> - Set your price</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Pro Tip */}
+              <div className="mt-4 p-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl border border-green-200/50">
+                <div className="flex items-start gap-2">
+                  <span className="text-green-500 text-lg">💡</span>
+                  <p className="text-sm text-green-800">
+                    <strong>Pro Tip:</strong> Your true hourly rate is lower than you think! Factor in commute time, work expenses, and unpaid hours to get your real hourly wage. Use this to compare job offers and negotiate better salaries. Our calculator shows you the complete picture!
+                  </p>
+                </div>
+              </div>
+
+              {/* SEO Content */}
+              <div className="mt-3 p-3 bg-white/60 rounded-xl border border-gray-200/50">
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  <strong>Why Use Our Salary to Hourly Calculator?</strong> Our free salary to hourly calculator helps you convert between annual salary and hourly wage, with adjustments for vacation, holidays, commute time, and work expenses. Whether you're comparing job offers, setting freelance rates, or budgeting your finances, our tool provides accurate calculations with detailed breakdowns. Know your true hourly rate and make better career decisions.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-3">
             <CalculatorForm 

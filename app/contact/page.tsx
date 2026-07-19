@@ -15,7 +15,7 @@ export default function ContactPage() {
     e.preventDefault()
     const subject = `Contact from ${formData.name}`
     const body = `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-    window.location.href = `mailto:${siteConfig.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    window.location.href = `mailto:um558899@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
     setIsSubmitted(true)
     setFormData({ name: '', email: '', message: '' })
   }
@@ -38,29 +38,76 @@ export default function ContactPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Contact Info */}
         <div className="md:col-span-1 space-y-6">
-          <div className="bg-white rounded-2xl p-6 shadow-card border border-gray-100">
-            <div className="text-2xl mb-2">📧</div>
-            <h3 className="font-semibold text-secondary">Email</h3>
-            <a href={`mailto:${siteConfig.email}`} className="text-primary hover:underline text-sm">
-              {siteConfig.email}
-            </a>
+          {/* Email */}
+          <div className="bg-white rounded-2xl p-6 shadow-card border border-gray-100 hover:shadow-lg transition-shadow">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
+                📧
+              </div>
+              <div>
+                <h3 className="font-semibold text-secondary text-sm uppercase tracking-wider text-gray-400">Email</h3>
+                <a 
+                  href="mailto:um558899@gmail.com" 
+                  className="text-primary hover:underline text-sm font-medium"
+                >
+                  um558899@gmail.com
+                </a>
+              </div>
+            </div>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-card border border-gray-100">
-            <div className="text-2xl mb-2">🐦</div>
-            <h3 className="font-semibold text-secondary">Twitter</h3>
-            <a
-              href={`https://twitter.com/${siteConfig.social.twitter}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline text-sm"
-            >
-              @{siteConfig.social.twitter}
-            </a>
+
+          {/* LinkedIn */}
+          <div className="bg-white rounded-2xl p-6 shadow-card border border-gray-100 hover:shadow-lg transition-shadow">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
+                🔗
+              </div>
+              <div>
+                <h3 className="font-semibold text-secondary text-sm uppercase tracking-wider text-gray-400">LinkedIn</h3>
+                <a
+                  href="https://www.linkedin.com/in/muhammad-usman-004b363a4/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline text-sm font-medium"
+                >
+                  Muhammad Usman
+                </a>
+              </div>
+            </div>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-card border border-gray-100">
-            <div className="text-2xl mb-2">💡</div>
-            <h3 className="font-semibold text-secondary">Response Time</h3>
-            <p className="text-sm text-gray-500">We aim to respond within 24-48 hours</p>
+
+          {/* Response Time */}
+          <div className="bg-white rounded-2xl p-6 shadow-card border border-gray-100 hover:shadow-lg transition-shadow">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
+                ⏱️
+              </div>
+              <div>
+                <h3 className="font-semibold text-secondary text-sm uppercase tracking-wider text-gray-400">Response Time</h3>
+                <p className="text-sm text-gray-700 font-medium">Within 24-48 hours</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Developer Info */}
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center text-white text-xl flex-shrink-0">
+                👨‍💻
+              </div>
+              <div>
+                <h3 className="font-semibold text-secondary text-sm uppercase tracking-wider text-gray-400">Developer</h3>
+                <p className="text-sm text-gray-700 font-medium">Muhammad Usman</p>
+                <a
+                  href="https://www.linkedin.com/in/muhammad-usman-004b363a4/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-primary hover:underline"
+                >
+                  Connect on LinkedIn →
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -68,12 +115,15 @@ export default function ContactPage() {
         <div className="md:col-span-2">
           <div className="bg-white rounded-2xl p-8 shadow-card border border-gray-100">
             {isSubmitted ? (
-              <div className="text-center py-8">
-                <div className="text-5xl mb-4">✅</div>
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">✅</div>
                 <h3 className="text-2xl font-bold text-secondary mb-2">Message Sent!</h3>
                 <p className="text-gray-500">Thank you for reaching out. We'll get back to you soon.</p>
-                <button onClick={() => setIsSubmitted(false)} className="mt-4 text-primary hover:underline">
-                  Send another message
+                <button 
+                  onClick={() => setIsSubmitted(false)} 
+                  className="mt-6 text-primary hover:underline font-medium"
+                >
+                  Send another message →
                 </button>
               </div>
             ) : (
@@ -88,7 +138,7 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-200 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                    className="w-full px-4 py-3 text-base border border-gray-200 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-gray-50 hover:bg-white focus:bg-white"
                     placeholder="John Doe"
                   />
                 </div>
@@ -102,7 +152,7 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-200 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                    className="w-full px-4 py-3 text-base border border-gray-200 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-gray-50 hover:bg-white focus:bg-white"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -116,11 +166,14 @@ export default function ContactPage() {
                     onChange={handleChange}
                     required
                     rows={5}
-                    className="w-full px-4 py-3 text-base border border-gray-200 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                    placeholder="How can we help you?"
+                    className="w-full px-4 py-3 text-base border border-gray-200 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-gray-50 hover:bg-white focus:bg-white"
+                    placeholder="How can we help you? Tell us about your question, suggestion, or feedback..."
                   />
                 </div>
-                <button type="submit" className="w-full btn-primary">
+                <button 
+                  type="submit" 
+                  className="w-full bg-gradient-to-r from-primary to-primary-dark text-white font-semibold py-3.5 px-6 rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all duration-200 text-base"
+                >
                   Send Message ✉️
                 </button>
                 <p className="text-xs text-gray-400 text-center">
@@ -128,6 +181,31 @@ export default function ContactPage() {
                 </p>
               </form>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <div className="mt-16 bg-white rounded-2xl p-8 shadow-card border border-gray-100">
+        <h2 className="text-2xl font-bold text-secondary text-center mb-6">
+          Frequently Asked Questions
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <h4 className="font-semibold text-secondary">How do I use the calculators?</h4>
+            <p className="text-sm text-gray-500">Simply enter your numbers in the input fields and click Calculate. Each calculator has a guide at the top to help you get started.</p>
+          </div>
+          <div className="space-y-2">
+            <h4 className="font-semibold text-secondary">Are the calculators free?</h4>
+            <p className="text-sm text-gray-500">Yes! All calculators on CalcWise Pro are completely free to use with no registration required.</p>
+          </div>
+          <div className="space-y-2">
+            <h4 className="font-semibold text-secondary">How accurate are the calculations?</h4>
+            <p className="text-sm text-gray-500">Our calculations use standard financial formulas and are updated with current rates. However, always verify with official sources for final decisions.</p>
+          </div>
+          <div className="space-y-2">
+            <h4 className="font-semibold text-secondary">Can I suggest a new calculator?</h4>
+            <p className="text-sm text-gray-500">Absolutely! We'd love to hear your suggestions. Send us a message using the form above.</p>
           </div>
         </div>
       </div>

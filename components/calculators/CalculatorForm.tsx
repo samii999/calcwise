@@ -95,7 +95,6 @@ export function CalculatorForm({
       compoundingFrequency: 'monthly',
       contributionTiming: 'beginning',
       inflationRate: 0,
-      // Ensure no mortgage defaults interfere with car loan
       homePrice: 0,
       propertyTax: 0,
       homeInsurance: 0,
@@ -116,28 +115,20 @@ export function CalculatorForm({
 
   const currencySymbol = CURRENCIES[currency].symbol
 
-  // ✅ NEW: Handle country change - auto update property tax
+  // ✅ FIXED: Only update country, nothing else
   const handleCountryChange = useCallback((country: string) => {
-    const countryData = COUNTRIES.find((c) => c.value === country)
-    if (countryData) {
-      const taxRate = countryData.taxRate / 100
-      setValues((prev) => {
-        const homePrice = prev.homePrice || 450000
-        return {
-          ...prev,
-          country,
-          propertyTax: Math.round(homePrice * taxRate * 100) / 100,
-        }
-      })
-    }
+    setValues((prev) => ({
+      ...prev,
+      country,
+    }))
   }, [])
 
-  // Handle field changes
+  // ✅ FIXED: No auto-updates - fields are independent
   const handleChange = useCallback((id: string, value: any) => {
     setValues((prev) => {
       const newValues = { ...prev, [id]: value }
 
-      // Auto-update loan type rate
+      // ✅ ONLY auto-update loan type rate (this is actually useful)
       if (id === 'loanType') {
         const loanTypeRates: Record<string, number> = {
           personal: 12.0,
@@ -149,55 +140,11 @@ export function CalculatorForm({
         newValues.interestRate = loanTypeRates[value] || 11.0
       }
 
-      // Auto-update down payment percentage for mortgage
-      if (id === 'homePrice' || id === 'downPayment') {
-        const homePrice = newValues.homePrice || 0
-        const downPayment = newValues.downPayment || 0
-        if (homePrice > 0) {
-          newValues.downPaymentPercent = Math.round((downPayment / homePrice) * 1000) / 10
-        }
-        const percent = newValues.downPaymentPercent || 0
-        newValues.pmi = percent < 20 ? 0.5 : 0
-      }
-
-      // Auto-update down payment percentage for car loan (only if no homePrice present)
-      if ((id === 'vehiclePrice' || id === 'downPayment') && !newValues.homePrice) {
-        const vehiclePrice = newValues.vehiclePrice || 0
-        const downPayment = newValues.downPayment || 0
-        if (vehiclePrice > 0) {
-          newValues.downPaymentPercent = Math.round((downPayment / vehiclePrice) * 1000) / 10
-        }
-      }
-
-      if (id === 'downPaymentPercent') {
-        const percent = newValues.downPaymentPercent || 0
-        const homePrice = newValues.homePrice || 0
-        const vehiclePrice = newValues.vehiclePrice || 0
-        
-        // Only update down payment if we have a valid price to calculate from
-        // Prioritize homePrice for mortgages (default behavior)
-        if (homePrice > 0) {
-          newValues.downPayment = Math.round((percent / 100) * homePrice)
-          newValues.pmi = percent < 20 ? 0.5 : 0
-        } else if (vehiclePrice > 0) {
-          newValues.downPayment = Math.round((percent / 100) * vehiclePrice)
-        }
-      }
-
-      // Auto-update contribution timing
-      if (id === 'contributionTiming') {
-        setContributionTiming(value)
-      }
-
-      // Auto-update repayment type
-      if (id === 'repaymentType') {
-        setRepaymentType(value)
-      }
-
-      // Auto-update mode toggle
-      if (id === 'modeToggle') {
-        setModeToggle(value)
-      }
+      // ❌ REMOVED: All other auto-update logic
+      // No more downPayment auto-calculations
+      // No more PMI auto-calculations
+      // No more propertyTax auto-updates
+      // No more contribution timing auto-updates
 
       return newValues
     })
@@ -305,7 +252,7 @@ export function CalculatorForm({
           </div>
         )}
 
-        {/* ✅ Country Selector - Updated with handleCountryChange */}
+        {/* ✅ Country Selector - FIXED: No auto-update */}
         {showCountry && countryInput && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">

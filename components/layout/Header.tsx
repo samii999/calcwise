@@ -69,6 +69,9 @@ export function Header() {
                 </div>
               </div>
             </div>
+            <Link href="/blog" className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200">
+              Blog
+            </Link>
 
             <Link 
               href="/about" 
@@ -82,6 +85,7 @@ export function Header() {
             >
               Contact
             </Link>
+            
           </nav>
 
           {/* Search Bar */}
