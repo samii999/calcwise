@@ -18,6 +18,17 @@ export interface RetirementInputs {
   inflationRate: number
   annualWithdrawal: number
   country: string
+  desiredRetirementIncome: number
+  socialSecurityIncome: number
+  pensionIncome: number
+  otherRetirementIncome: number
+  preRetirementTaxRate: number
+  postRetirementTaxRate: number
+  annualHealthcareCost: number
+  accountType: 'traditional401k' | 'roth401k' | 'traditionalira' | 'rothira' | 'taxable'
+  maritalStatus: 'single' | 'married' | 'widowed'
+  expectedLumpSum: number
+  retirementExpenseMultiplier: number
 }
 
 export interface RetirementResults {
@@ -37,6 +48,13 @@ export interface RetirementResults {
     additionalNeeded: number
     additionalMatch: number
   }
+  totalRetirementIncome: number
+  incomeGap: number
+  savingsGoal: number
+  projectedSocialSecurity: number
+  totalHealthcareCosts: number
+  taxSavings: number
+  recommendedContribution: number
 }
 
 export interface YearlyData {
@@ -48,6 +66,11 @@ export interface YearlyData {
   returns: number
   isRetired: boolean
   inflationAdjusted?: number
+  salary: number
+  taxesPaid: number
+  healthcareCost: number
+  totalIncome: number
+  totalExpenses: number
 }
 
 export function calculateRetirement(inputs: RetirementInputs): RetirementResults {
@@ -65,16 +88,40 @@ export function calculateRetirement(inputs: RetirementInputs): RetirementResults
     lifeExpectancy,
     inflationRate,
     annualWithdrawal,
+    desiredRetirementIncome,
+    socialSecurityIncome,
+    pensionIncome,
+    otherRetirementIncome,
+    preRetirementTaxRate,
+    postRetirementTaxRate,
+    annualHealthcareCost,
+    accountType,
+    maritalStatus,
+    expectedLumpSum,
+    retirementExpenseMultiplier,
   } = inputs
 
   const yearsUntilRetirement = Math.max(0, retirementAge - currentAge)
   const yearsInRetirement = Math.max(0, lifeExpectancy - retirementAge)
   const totalYears = yearsUntilRetirement + yearsInRetirement
 
-  // ===== 1. EMPLOYER MATCH CALCULATION =====
+  // ===== 1. CALCULATE SAVINGS GOAL =====
+  const annualExpenses = currentSalary * (retirementExpenseMultiplier / 100)
+  const totalAnnualIncomeNeeded = desiredRetirementIncome || annualExpenses
+  const totalRetirementIncome = socialSecurityIncome + pensionIncome + otherRetirementIncome
+  const incomeFromSavingsNeeded = Math.max(0, totalAnnualIncomeNeeded - totalRetirementIncome)
+  const savingsGoal = incomeFromSavingsNeeded * 25 // 4% rule inverse
+
+  // ===== 2. EMPLOYER MATCH CALCULATION =====
   const personalContribution = currentSalary * (contributionRate / 100)
   const maxMatch = currentSalary * (employerMatchLimit / 100)
   const employerMatch = Math.min(personalContribution * (employerMatchRate / 100), maxMatch)
+  
+  // ===== 3. TAX SAVINGS CALCULATION =====
+  let taxSavings = 0
+  if (accountType === 'traditional401k' || accountType === 'traditionalira') {
+    taxSavings = personalContribution * (preRetirementTaxRate / 100)
+  }
 
   // ===== 2. EMPLOYER MATCH ALERT =====
   let employerMatchAlert = undefined
@@ -89,7 +136,15 @@ export function calculateRetirement(inputs: RetirementInputs): RetirementResults
     }
   }
 
-  // ===== 3. SIMULATION LOOP =====
+  // ===== 4. RECOMMENDED CONTRIBUTION =====
+  const yearsToGrow = retirementAge - currentAge
+  const futureValueNeeded = savingsGoal - currentSavings * Math.pow(1 + preRetirementReturn / 100, yearsToGrow)
+  const annualContributionNeeded = futureValueNeeded > 0 
+    ? futureValueNeeded / (((Math.pow(1 + preRetirementReturn / 100, yearsToGrow) - 1) / (preRetirementReturn / 100)))
+    : 0
+  const recommendedContribution = Math.max(0, annualContributionNeeded)
+  
+  // ===== 5. SIMULATION LOOP =====
   const yearlyData: YearlyData[] = []
   let balance = currentSavings
   let salary = currentSalary
@@ -98,6 +153,8 @@ export function calculateRetirement(inputs: RetirementInputs): RetirementResults
   let totalReturns = 0
   let shortfall = 0
   let isSustainable = true
+  let totalHealthcareCosts = 0
+  let totalTaxesPaid = 0
   const epsilon = 1e-9
 
   for (let year = 1; year <= totalYears; year++) {
@@ -111,6 +168,8 @@ export function calculateRetirement(inputs: RetirementInputs): RetirementResults
     // Calculate contributions
     let yearContributions = 0
     let yearEmployerMatch = 0
+    let yearTaxes = 0
+    let yearHealthcare = 0
 
     if (!isRetired) {
       // Salary growth (only if year > 1, but we apply it at start of each year)
@@ -121,24 +180,57 @@ export function calculateRetirement(inputs: RetirementInputs): RetirementResults
       const personalContrib = salary * (contributionRate / 100)
       const maxMatchAmount = salary * (employerMatchLimit / 100)
       const employerMatchAmount = Math.min(personalContrib * (employerMatchRate / 100), maxMatchAmount)
+      
+      // Calculate tax savings from contributions
+      const yearTaxSavings = (accountType === 'traditional401k' || accountType === 'traditionalira')
+        ? personalContrib * (preRetirementTaxRate / 100)
+        : 0
+      yearTaxes = yearTaxSavings
+      totalTaxesPaid += yearTaxSavings
 
       yearContributions = personalContrib
       yearEmployerMatch = employerMatchAmount
       totalPersonalContributions += personalContrib
       totalEmployerMatch += employerMatchAmount
+    } else {
+      // Healthcare costs in retirement (inflated)
+      yearHealthcare = annualHealthcareCost * Math.pow(1 + inflationRate / 100, year - yearsUntilRetirement)
+      totalHealthcareCosts += yearHealthcare
+      
+      // Taxes on withdrawals (for traditional accounts)
+      if (accountType === 'traditional401k' || accountType === 'traditionalira') {
+        yearTaxes = annualWithdrawal * (postRetirementTaxRate / 100)
+        totalTaxesPaid += yearTaxes
+      }
     }
 
     // Calculate withdrawal
     let yearWithdrawal = 0
+    let totalYearlyIncome = 0
+    let totalYearlyExpenses = 0
+    
     if (isRetired) {
-      yearWithdrawal = annualWithdrawal
+      // Add expected lump sum at retirement year
+      if (age === retirementAge && expectedLumpSum > 0) {
+        balance += expectedLumpSum
+      }
+      
+      yearWithdrawal = annualWithdrawal || incomeFromSavingsNeeded
+      
+      // Calculate total income in retirement
+      const inflatedSocialSecurity = socialSecurityIncome * Math.pow(1 + inflationRate / 100, year - yearsUntilRetirement)
+      const inflatedPension = pensionIncome * Math.pow(1 + inflationRate / 100, year - yearsUntilRetirement)
+      const inflatedOtherIncome = otherRetirementIncome * Math.pow(1 + inflationRate / 100, year - yearsUntilRetirement)
+      
+      totalYearlyIncome = inflatedSocialSecurity + inflatedPension + inflatedOtherIncome + yearWithdrawal
+      totalYearlyExpenses = yearHealthcare + yearWithdrawal + yearTaxes
     }
 
     // Calculate return
     const yearReturn = balance * annualReturnRate
 
     // Update balance
-    balance = balance + yearContributions + yearEmployerMatch + yearReturn - yearWithdrawal
+    balance = balance + yearContributions + yearEmployerMatch + yearReturn - yearWithdrawal - yearHealthcare
 
     // Handle negative balance
     if (balance < 0) {
@@ -158,6 +250,11 @@ export function calculateRetirement(inputs: RetirementInputs): RetirementResults
       returns: Math.round(yearReturn),
       isRetired,
       inflationAdjusted: Math.round(Math.max(0, balance) / Math.pow(1 + inflationRate / 100, year)),
+      salary: Math.round(salary),
+      taxesPaid: Math.round(yearTaxes),
+      healthcareCost: Math.round(yearHealthcare),
+      totalIncome: Math.round(totalYearlyIncome),
+      totalExpenses: Math.round(totalYearlyExpenses),
     })
 
     // Early exit if balance is zero and retired
@@ -167,19 +264,25 @@ export function calculateRetirement(inputs: RetirementInputs): RetirementResults
   // ===== 4. RETIREMENT BALANCE =====
   const retirementBalance = yearlyData.find(d => d.age === retirementAge)?.balance || 0
 
-  // ===== 5. MONTHLY INCOME (4% Rule) =====
+  // ===== 6. MONTHLY INCOME (4% Rule) =====
   const monthlyIncome = retirementBalance * 0.04 / 12
   const inflationAdjustedIncome = monthlyIncome / Math.pow(1 + inflationRate / 100, yearsUntilRetirement)
+  
+  // ===== 7. INCOME GAP ANALYSIS =====
+  const totalMonthlyRetirementIncome = (socialSecurityIncome + pensionIncome + otherRetirementIncome + monthlyIncome) / 12
+  const monthlyIncomeNeeded = totalAnnualIncomeNeeded / 12
+  const incomeGap = Math.max(0, monthlyIncomeNeeded - totalMonthlyRetirementIncome)
+  
+  // ===== 8. PROJECTED SOCIAL SECURITY =====
+  const projectedSocialSecurity = socialSecurityIncome * Math.pow(1 + inflationRate / 100, yearsUntilRetirement)
 
-  // ===== 6. SUSTAINABILITY CHECK =====
-  if (annualWithdrawal > 0 && retirementBalance > 0) {
-    const withdrawalRate = annualWithdrawal / retirementBalance
-    isSustainable = withdrawalRate <= 0.04
-  }
+  // ===== 9. SUSTAINABILITY CHECK =====
+  const effectiveWithdrawalRate = annualWithdrawal > 0 ? annualWithdrawal / retirementBalance : 0
+  isSustainable = effectiveWithdrawalRate <= 0.04 && retirementBalance >= savingsGoal * 0.8
 
-  // ===== 7. SHORTFALL =====
+  // ===== 10. SHORTFALL =====
   if (!isSustainable && retirementBalance > 0) {
-    shortfall = Math.round(annualWithdrawal - retirementBalance * 0.04)
+    shortfall = Math.round(savingsGoal - retirementBalance)
   }
 
   return {
@@ -194,5 +297,12 @@ export function calculateRetirement(inputs: RetirementInputs): RetirementResults
     yearlyData,
     shortfall: Math.round(shortfall),
     employerMatchAlert,
+    totalRetirementIncome: Math.round(totalRetirementIncome),
+    incomeGap: Math.round(incomeGap),
+    savingsGoal: Math.round(savingsGoal),
+    projectedSocialSecurity: Math.round(projectedSocialSecurity),
+    totalHealthcareCosts: Math.round(totalHealthcareCosts),
+    taxSavings: Math.round(taxSavings + totalTaxesPaid),
+    recommendedContribution: Math.round(recommendedContribution),
   }
 }

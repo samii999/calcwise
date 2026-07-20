@@ -13,6 +13,7 @@ export interface NavSection {
 export const headerNav: NavLink[] = [
   { name: 'Home', href: '/' },
   { name: 'Calculators', href: '/#calculators' },
+  { name: 'Blog', href: '/blog' },
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },
 ]

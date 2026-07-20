@@ -225,6 +225,8 @@ export function ResultsDisplay({
               <th className="px-4 py-2 text-right text-gray-600">Contributions</th>
               <th className="px-4 py-2 text-right text-gray-600">Employer Match</th>
               <th className="px-4 py-2 text-right text-gray-600">Returns</th>
+              <th className="px-4 py-2 text-right text-gray-600">Healthcare</th>
+              <th className="px-4 py-2 text-right text-gray-600">Taxes</th>
               <th className="px-4 py-2 text-center text-gray-600">Status</th>
             </tr>
           </thead>
@@ -237,12 +239,14 @@ export function ResultsDisplay({
                 <td className="px-4 py-2 text-right text-gray-600">{formatCurrency(row.contributions || 0, currency)}</td>
                 <td className="px-4 py-2 text-right text-gray-600">{formatCurrency(row.employerMatch || 0, currency)}</td>
                 <td className="px-4 py-2 text-right text-gray-600">{formatCurrency(row.returns || 0, currency)}</td>
+                <td className="px-4 py-2 text-right text-gray-600">{formatCurrency(row.healthcareCost || 0, currency)}</td>
+                <td className="px-4 py-2 text-right text-gray-600">{formatCurrency(row.taxesPaid || 0, currency)}</td>
                 <td className="px-4 py-2 text-center text-gray-600">{row.isRetired ? 'Retired' : 'Working'}</td>
               </tr>
             ))}
             {results.yearlyData.length > 30 && (
               <tr className="border-t border-gray-200">
-                <td colSpan={7} className="px-4 py-3 text-center text-gray-400 text-sm">
+                <td colSpan={9} className="px-4 py-3 text-center text-gray-400 text-sm">
                   ... and {results.yearlyData.length - 30} more rows
                 </td>
               </tr>
@@ -860,6 +864,45 @@ export function ResultsDisplay({
         </div>
       )}
 
+      {/* ===== RETIREMENT SUSTAINABILITY ALERT ===== */}
+      {isRetirement && results.isSustainable !== undefined && (
+        <div className={`${results.isSustainable ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} border rounded-xl p-4 text-center`}>
+          <p className={`${results.isSustainable ? 'text-green-800' : 'text-red-800'} font-semibold`}>
+            {results.isSustainable ? '✅ Your Retirement Plan is Sustainable' : '⚠️ Your Retirement Plan Needs Adjustment'}
+          </p>
+          <p className={`${results.isSustainable ? 'text-green-600' : 'text-red-600'} text-sm`}>
+            {results.isSustainable 
+              ? 'Your savings are on track to support your retirement lifestyle.' 
+              : 'Consider increasing contributions, delaying retirement, or reducing expenses.'}
+          </p>
+        </div>
+      )}
+
+      {/* ===== RETIREMENT SHORTFALL ALERT ===== */}
+      {isRetirement && results.shortfall !== undefined && results.shortfall > 0 && (
+        <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 text-center">
+          <p className="text-orange-800 font-semibold">
+            💰 Savings Shortfall: {formatCurrency(results.shortfall, currency)}
+          </p>
+          <p className="text-orange-600 text-sm">
+            You need this additional amount to reach your retirement goal.
+          </p>
+        </div>
+      )}
+
+      {/* ===== EMPLOYER MATCH ALERT ===== */}
+      {isRetirement && results.employerMatchAlert && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center">
+          <p className="text-yellow-800 font-semibold">
+            🎯 Maximize Your Employer Match!
+          </p>
+          <p className="text-yellow-600 text-sm">
+            Increase your contribution by <strong>{results.employerMatchAlert.additionalNeeded}%</strong> to get an additional 
+            <strong> {formatCurrency(results.employerMatchAlert.additionalMatch, currency)}</strong> in employer matching.
+          </p>
+        </div>
+      )}
+
       {/* ===== STATUS BADGE ===== */}
       {results.status && results.statusLabel && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-center">
@@ -1042,6 +1085,113 @@ export function ResultsDisplay({
           <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
             <p className="text-xs text-gray-500">CAGR</p>
             <p className="text-lg font-semibold text-secondary">{results.cagr}%</p>
+          </div>
+        )}
+
+        {/* ===== RETIREMENT SPECIFIC ===== */}
+        {isRetirement && results.yearsUntilRetirement !== undefined && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Years to Retirement</p>
+            <p className="text-lg font-semibold text-secondary">{results.yearsUntilRetirement}</p>
+          </div>
+        )}
+
+        {isRetirement && results.monthlyIncome !== undefined && results.monthlyIncome > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Monthly Income (4% Rule)</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.monthlyIncome, currency)}
+            </p>
+          </div>
+        )}
+
+        {isRetirement && results.totalPersonalContributions !== undefined && results.totalPersonalContributions > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Your Contributions</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.totalPersonalContributions, currency)}
+            </p>
+          </div>
+        )}
+
+        {isRetirement && results.totalEmployerMatch !== undefined && results.totalEmployerMatch > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Employer Match</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.totalEmployerMatch, currency)}
+            </p>
+          </div>
+        )}
+
+        {isRetirement && results.totalReturns !== undefined && results.totalReturns > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Investment Returns</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.totalReturns, currency)}
+            </p>
+          </div>
+        )}
+
+        {isRetirement && results.inflationAdjustedIncome !== undefined && results.inflationAdjustedIncome > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Inflation-Adjusted Income</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.inflationAdjustedIncome, currency)}
+            </p>
+          </div>
+        )}
+
+        {isRetirement && results.savingsGoal !== undefined && results.savingsGoal > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Savings Goal</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.savingsGoal, currency)}
+            </p>
+          </div>
+        )}
+
+        {isRetirement && results.totalRetirementIncome !== undefined && results.totalRetirementIncome > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Total Retirement Income</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.totalRetirementIncome, currency)}
+            </p>
+          </div>
+        )}
+
+        {isRetirement && results.incomeGap !== undefined && results.incomeGap > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Income Gap</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.incomeGap, currency)}
+            </p>
+          </div>
+        )}
+
+        {isRetirement && results.totalHealthcareCosts !== undefined && results.totalHealthcareCosts > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Total Healthcare Costs</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.totalHealthcareCosts, currency)}
+            </p>
+          </div>
+        )}
+
+        {isRetirement && results.taxSavings !== undefined && results.taxSavings > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Tax Savings</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.taxSavings, currency)}
+            </p>
+          </div>
+        )}
+
+        {isRetirement && results.recommendedContribution !== undefined && results.recommendedContribution > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Recommended Annual Contribution</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.recommendedContribution, currency)}
+            </p>
           </div>
         )}
 

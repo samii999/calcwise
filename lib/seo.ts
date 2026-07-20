@@ -1,24 +1,6 @@
 import { siteConfig } from '@/config/site'
 import { getCalculatorMetadata } from '@/data/metadata'
-
-interface SeoMetadata {
-  title: string
-  description: string
-  keywords?: string[]
-  openGraph?: {
-    title: string
-    description: string
-    url?: string
-    images?: { url: string; width: number; height: number; alt: string }[]
-  }
-  twitter?: {
-    card: 'summary' | 'summary_large_image'
-    title: string
-    description: string
-    images?: string[]
-  }
-  canonical?: string
-}
+import type { SeoMetadata, BreadcrumbItem, FAQSchema } from '@/types/seo'
 
 /**
  * Generate metadata for a calculator page
@@ -137,7 +119,7 @@ export function generateHomeMetadata(): SeoMetadata {
 /**
  * Generate breadcrumb schema
  */
-export function generateBreadcrumbSchema(items: { name: string; url: string }[]) {
+export function generateBreadcrumbSchema(items: BreadcrumbItem[]) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -153,7 +135,7 @@ export function generateBreadcrumbSchema(items: { name: string; url: string }[])
 /**
  * Generate FAQ schema
  */
-export function generateFAQSchema(faqs: { question: string; answer: string }[]) {
+export function generateFAQSchema(faqs: FAQSchema[]) {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',

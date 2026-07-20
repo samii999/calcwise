@@ -157,7 +157,7 @@ export function CalculatorForm({
 
   // Separate inputs by type
   const advancedInputs = inputs.filter((input) =>
-    ['homeInsurance', 'hoaDues', 'pmi', 'originationFee', 'compoundingFrequency', 'inflationRate'].includes(input.id)
+    ['homeInsurance', 'hoaDues', 'pmi', 'originationFee', 'compoundingFrequency', 'inflationRate', 'socialSecurityIncome', 'pensionIncome', 'otherRetirementIncome', 'preRetirementTaxRate', 'postRetirementTaxRate', 'annualHealthcareCost', 'expectedLumpSum', 'annualWithdrawal', 'desiredRetirementIncome'].includes(input.id)
   )
 
   const extraInputs = inputs.filter((input) =>
@@ -165,7 +165,7 @@ export function CalculatorForm({
   )
 
   const mainInputs = inputs.filter((input) =>
-  !['homeInsurance', 'hoaDues', 'pmi', 'originationFee', 'compoundingFrequency', 'inflationRate', 'extraPayment', 'extraContribution'].includes(input.id)
+  !['homeInsurance', 'hoaDues', 'pmi', 'originationFee', 'compoundingFrequency', 'inflationRate', 'extraPayment', 'extraContribution', 'socialSecurityIncome', 'pensionIncome', 'otherRetirementIncome', 'preRetirementTaxRate', 'postRetirementTaxRate', 'annualHealthcareCost', 'expectedLumpSum', 'annualWithdrawal', 'desiredRetirementIncome'].includes(input.id)
 )
 
   // Country input

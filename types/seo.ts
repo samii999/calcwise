@@ -48,3 +48,21 @@ export interface WebApplicationSchema {
   operatingSystem: string
   browserRequirements?: string
 }
+
+// ── Data-layer interfaces (moved here from data/metadata.ts) ──────────────
+
+export interface PageMetadata {
+  title: string
+  description: string
+  keywords?: string[]
+  canonical?: string
+  ogTitle?: string
+  ogDescription?: string
+}
+
+export interface CalculatorMetadata extends PageMetadata {
+  slug: string
+  ogImage?: string
+  category?: string
+  faqs?: FAQSchema[]
+}
