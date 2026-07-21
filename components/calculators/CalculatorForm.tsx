@@ -123,29 +123,10 @@ export function CalculatorForm({
     }))
   }, [])
 
-  // ✅ FIXED: No auto-updates - fields are independent
+  // ✅ FIXED: No auto-updates - fields are completely independent
   const handleChange = useCallback((id: string, value: any) => {
     setValues((prev) => {
       const newValues = { ...prev, [id]: value }
-
-      // ✅ ONLY auto-update loan type rate (this is actually useful)
-      if (id === 'loanType') {
-        const loanTypeRates: Record<string, number> = {
-          personal: 12.0,
-          home: 8.5,
-          car: 10.5,
-          education: 9.0,
-          custom: 11.0,
-        }
-        newValues.interestRate = loanTypeRates[value] || 11.0
-      }
-
-      // ❌ REMOVED: All other auto-update logic
-      // No more downPayment auto-calculations
-      // No more PMI auto-calculations
-      // No more propertyTax auto-updates
-      // No more contribution timing auto-updates
-
       return newValues
     })
   }, [])

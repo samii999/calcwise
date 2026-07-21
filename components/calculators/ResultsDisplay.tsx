@@ -758,6 +758,30 @@ export function ResultsDisplay({
         </div>
       )}
 
+      {/* ===== CREDIT CARD BALANCE TRANSFER SAVINGS ===== */}
+      {isCreditCard && results.balanceTransferSavings !== undefined && results.balanceTransferSavings > 0 && (
+        <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 text-center">
+          <p className="text-purple-800 font-semibold">
+            💳 Balance Transfer Could Save <strong>{formatCurrency(results.balanceTransferSavings, currency)}</strong>
+          </p>
+          <p className="text-purple-600 text-sm">
+            Transfer fee: {formatCurrency(results.balanceTransferFee, currency)} | Payoff in {results.balanceTransferPayoffMonths} months
+          </p>
+        </div>
+      )}
+
+      {/* ===== CREDIT CARD RECOMMENDED PAYMENT ===== */}
+      {isCreditCard && results.recommendedPayment !== undefined && results.recommendedPayment > 0 && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
+          <p className="text-blue-800 font-semibold">
+            💡 Recommended Payment: <strong>{formatCurrency(results.recommendedPayment, currency)}/month</strong>
+          </p>
+          <p className="text-blue-600 text-sm">
+            Pay this amount to be debt-free in 18 months
+          </p>
+        </div>
+      )}
+
       {/* ===== BI-WEEKLY TOGGLE ===== */}
       {(isMortgage || isLoan || isCarLoan) && (
         <div className="bg-white rounded-xl border border-gray-200 p-4">
@@ -864,6 +888,69 @@ export function ResultsDisplay({
         </div>
       )}
 
+      {/* ===== DEBT CONSOLIDATION ANALYSIS ===== */}
+      {isDebtPayoff && results.consolidationSavings !== undefined && results.consolidationSavings > 0 && (
+        <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 rounded-xl p-4 border border-amber-100/50">
+          <h4 className="font-semibold text-gray-800 mb-3 text-center">🔄 Debt Consolidation Analysis</h4>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white/80 rounded-lg p-3 text-center">
+              <p className="text-xs text-gray-500">Consolidation Savings</p>
+              <p className="text-sm font-semibold text-green-600">+{formatCurrency(results.consolidationSavings, currency)}</p>
+            </div>
+            <div className="bg-white/80 rounded-lg p-3 text-center">
+              <p className="text-xs text-gray-500">New Monthly Payment</p>
+              <p className="text-sm font-semibold text-blue-600">{formatCurrency(results.consolidationMonthlyPayment, currency)}</p>
+            </div>
+            <div className="bg-white/80 rounded-lg p-3 text-center">
+              <p className="text-xs text-gray-500">Consolidation Interest</p>
+              <p className="text-sm font-semibold text-red-600">{formatCurrency(results.consolidationTotalInterest, currency)}</p>
+            </div>
+            <div className="bg-white/80 rounded-lg p-3 text-center">
+              <p className="text-xs text-gray-500">Consolidation Term</p>
+              <p className="text-sm font-semibold text-gray-800">{results.consolidationPayoffMonths} months</p>
+            </div>
+          </div>
+          {results.recommendedConsolidation && (
+            <div className="mt-3 p-2 bg-green-100 rounded-lg text-center">
+              <p className="text-xs text-green-800 font-semibold">✅ Recommended: Consolidation saves money and fits your budget!</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ===== INVESTMENT IMPACT ANALYSIS ===== */}
+      {isInvestment && (results.feeImpact !== undefined || results.dividendImpact !== undefined || results.taxImpact !== undefined || results.inflationImpact !== undefined) && (
+        <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl p-4 border border-blue-100/50">
+          <h4 className="font-semibold text-gray-800 mb-3 text-center">📊 Impact Analysis</h4>
+          <div className="grid grid-cols-2 gap-3">
+            {results.feeImpact !== undefined && (
+              <div className="bg-white/80 rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500">Fee Impact</p>
+                <p className="text-sm font-semibold text-red-600">-{formatCurrency(results.feeImpact, currency)}</p>
+              </div>
+            )}
+            {results.dividendImpact !== undefined && results.dividendImpact > 0 && (
+              <div className="bg-white/80 rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500">Dividend Impact</p>
+                <p className="text-sm font-semibold text-green-600">+{formatCurrency(results.dividendImpact, currency)}</p>
+              </div>
+            )}
+            {results.taxImpact !== undefined && results.taxImpact > 0 && (
+              <div className="bg-white/80 rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500">Tax Impact</p>
+                <p className="text-sm font-semibold text-red-600">-{formatCurrency(results.taxImpact, currency)}</p>
+              </div>
+            )}
+            {results.inflationImpact !== undefined && results.inflationImpact > 0 && (
+              <div className="bg-white/80 rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500">Inflation Impact</p>
+                <p className="text-sm font-semibold text-orange-600">-{formatCurrency(results.inflationImpact, currency)}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ===== RETIREMENT SUSTAINABILITY ALERT ===== */}
       {isRetirement && results.isSustainable !== undefined && (
         <div className={`${results.isSustainable ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} border rounded-xl p-4 text-center`}>
@@ -957,6 +1044,47 @@ export function ResultsDisplay({
             <p className="text-lg font-semibold text-secondary">
               {formatCurrency(results.totalInterest, currency)}
             </p>
+          </div>
+        )}
+
+        {isInvestment && results.totalContributions !== undefined && results.totalContributions > 0 && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Total Contributions</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.totalContributions, currency)}
+            </p>
+          </div>
+        )}
+
+        {isInvestment && results.inflationAdjustedValue !== undefined && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Inflation Adjusted</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.inflationAdjustedValue, currency)}
+            </p>
+          </div>
+        )}
+
+        {isInvestment && results.realCAGR !== undefined && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">Real CAGR</p>
+            <p className="text-lg font-semibold text-secondary">{results.realCAGR}%</p>
+          </div>
+        )}
+
+        {isInvestment && results.afterTaxProfit !== undefined && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">After-Tax Profit</p>
+            <p className="text-lg font-semibold text-secondary">
+              {formatCurrency(results.afterTaxProfit, currency)}
+            </p>
+          </div>
+        )}
+
+        {isInvestment && results.afterTaxROI !== undefined && (
+          <div className="bg-white rounded-lg p-3 text-center border border-gray-100">
+            <p className="text-xs text-gray-500">After-Tax ROI</p>
+            <p className="text-lg font-semibold text-secondary">{results.afterTaxROI}%</p>
           </div>
         )}
 

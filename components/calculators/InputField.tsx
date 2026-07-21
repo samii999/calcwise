@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Tooltip } from './Tooltip'
 
 interface InputFieldProps {
@@ -43,11 +43,12 @@ export function InputField({
   // Local state to preserve user input while typing
   const [localValue, setLocalValue] = useState<string>('')
   const [isFocused, setIsFocused] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Sync local state with prop value when it changes from outside
-  // Only update if the user is not currently focused on the input
+  // Initialize local state from prop value
   useEffect(() => {
-    if (!isFocused) {
+    if (!isTyping && !isFocused) {
       if (value === undefined || value === null) {
         setLocalValue('')
       } else if (typeof value === 'string') {
@@ -56,12 +57,23 @@ export function InputField({
         setLocalValue(String(value))
       }
     }
-  }, [value, isFocused])
+  }, [value, isTyping, isFocused])
 
   // Handle number input change
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value
     setLocalValue(raw)
+    setIsTyping(true)
+
+    // Clear previous timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current)
+    }
+
+    // Set new timeout to stop typing state after 500ms
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false)
+    }, 500)
 
     // ✅ Allow empty field
     if (raw === '') {
@@ -70,7 +82,6 @@ export function InputField({
     }
 
     // ✅ Pass the raw string value to preserve user input exactly
-    // This prevents automatic value changes while typing
     onChange(raw)
   }
 
@@ -79,8 +90,8 @@ export function InputField({
     onChange(parseFloat(e.target.value))
   }
 
-  // ✅ Display value: use local state to preserve user input while typing
-  const displayValue = localValue
+  // ✅ Display value: use local state when typing or focused, prop value otherwise
+  const displayValue = (isTyping || isFocused) ? localValue : (value === undefined || value === null ? '' : String(value))
 
   return (
     <div className="space-y-1.5">

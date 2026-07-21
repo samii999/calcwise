@@ -12,6 +12,10 @@ export interface CreditCardInputs {
   minPaymentPercent: number
   minPaymentFloor: number
   targetPayoffMonths: number
+  hasBalanceTransfer?: boolean
+  transferAPR?: number
+  transferPeriod?: number
+  transferFee?: number
 }
 
 export interface CreditCardResults {
@@ -25,6 +29,10 @@ export interface CreditCardResults {
   amortizationSchedule: AmortizationRow[]
   isNegativeAmortization: boolean
   warningMessage?: string
+  balanceTransferSavings?: number
+  balanceTransferFee?: number
+  balanceTransferPayoffMonths?: number
+  recommendedPayment?: number
 }
 
 export interface AmortizationRow {
@@ -47,11 +55,18 @@ export function calculateCreditCardPayoff(inputs: CreditCardInputs): CreditCardR
     minPaymentPercent = 2.5,
     minPaymentFloor = 25,
     targetPayoffMonths = 24,
+    hasBalanceTransfer = false,
+    transferAPR = 0,
+    transferPeriod = 12,
+    transferFee = 3,
   } = inputs
 
   const monthlyRate = interestRate / 100 / 12
   let isNegativeAmortization = false
   let warningMessage = undefined
+  let balanceTransferSavings = 0
+  let balanceTransferFeeAmount = 0
+  let balanceTransferPayoffMonths = 0
 
   // ===== 1. DETERMINE PAYMENT AMOUNT =====
   let basePayment = monthlyPayment
@@ -156,6 +171,54 @@ export function calculateCreditCardPayoff(inputs: CreditCardInputs): CreditCardR
         year: 'numeric',
       })
 
+  // ===== 7. BALANCE TRANSFER CALCULATION =====
+  if (hasBalanceTransfer && !isNegativeAmortization) {
+    const transferMonthlyRate = transferAPR / 100 / 12
+    balanceTransferFeeAmount = balance * (transferFee / 100)
+    const totalWithFee = balance + balanceTransferFeeAmount
+    
+    // Calculate payoff with transfer during promotional period
+    let transferBalance = totalWithFee
+    let transferMonths = 0
+    let transferInterest = 0
+    
+    // During promotional period
+    while (transferBalance > 0 && transferMonths < transferPeriod) {
+      transferMonths++
+      const interestThisMonth = transferBalance * transferMonthlyRate
+      const principalThisMonth = Math.min(totalMonthly - interestThisMonth, transferBalance)
+      transferBalance -= principalThisMonth
+      transferInterest += interestThisMonth
+    }
+    
+    // After promotional period (revert to original rate)
+    if (transferBalance > 0) {
+      while (transferBalance > 0 && transferMonths < 1200) {
+        transferMonths++
+        const interestThisMonth = transferBalance * monthlyRate
+        const principalThisMonth = Math.min(totalMonthly - interestThisMonth, transferBalance)
+        transferBalance -= principalThisMonth
+        transferInterest += interestThisMonth
+      }
+    }
+    
+    const transferTotalPayment = totalWithFee + transferInterest
+    balanceTransferSavings = Math.max(0, totalPayment - transferTotalPayment)
+    balanceTransferPayoffMonths = transferMonths
+  }
+
+  // ===== 8. RECOMMENDED PAYMENT =====
+  // Recommend paying 3% of balance or fixed amount to payoff in 18 months
+  const recommendedPayoffMonths = 18
+  let recommendedPayment = 0
+  if (monthlyRate > 0) {
+    recommendedPayment = (balance * monthlyRate * Math.pow(1 + monthlyRate, recommendedPayoffMonths)) /
+      (Math.pow(1 + monthlyRate, recommendedPayoffMonths) - 1)
+  } else {
+    recommendedPayment = balance / recommendedPayoffMonths
+  }
+  recommendedPayment = Math.round(Math.max(recommendedPayment, balance * 0.03))
+
   return {
     monthlyPayment: Math.round(totalMonthly),
     totalInterest: Math.round(totalInterest),
@@ -167,5 +230,9 @@ export function calculateCreditCardPayoff(inputs: CreditCardInputs): CreditCardR
     amortizationSchedule,
     isNegativeAmortization,
     warningMessage,
+    balanceTransferSavings: Math.round(balanceTransferSavings),
+    balanceTransferFee: Math.round(balanceTransferFeeAmount),
+    balanceTransferPayoffMonths,
+    recommendedPayment,
   }
 }

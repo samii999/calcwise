@@ -20,6 +20,10 @@ export default function DebtPayoffCalculatorPage() {
       totalMonthlyBudget: values.totalMonthlyBudget,
       strategy: values.strategy || 'avalanche',
       extraPayment: values.extraPayment || 0,
+      hasConsolidation: values.hasConsolidation === 'yes',
+      consolidationRate: values.consolidationRate || 8,
+      consolidationTerm: values.consolidationTerm || 5,
+      consolidationFee: values.consolidationFee || 3,
     })
     setResults(result)
   }, [])
@@ -92,6 +96,54 @@ export default function DebtPayoffCalculatorPage() {
       tooltip: 'Extra amount to pay toward debt each month',
       helpText: 'Even $50/month can make a big difference!',
     },
+    {
+      id: 'hasConsolidation',
+      label: 'Consider Debt Consolidation',
+      type: 'select' as const,
+      value: 'no',
+      options: [
+        { value: 'no', label: 'No' },
+        { value: 'yes', label: 'Yes' },
+      ],
+      tooltip: 'Calculate potential savings from consolidating debts into one loan',
+      helpText: 'Compare consolidation loan offers',
+    },
+    {
+      id: 'consolidationRate',
+      label: 'Consolidation Loan Rate (%)',
+      type: 'number' as const,
+      value: 8,
+      min: 0,
+      max: 30,
+      step: 0.5,
+      suffix: '%',
+      tooltip: 'Interest rate for consolidation loan',
+      helpText: 'Typically lower than credit card rates',
+    },
+    {
+      id: 'consolidationTerm',
+      label: 'Consolidation Loan Term (Years)',
+      type: 'number' as const,
+      value: 5,
+      min: 1,
+      max: 30,
+      step: 1,
+      suffix: ' years',
+      tooltip: 'Repayment period for consolidation loan',
+      helpText: 'Shorter term = less interest but higher payments',
+    },
+    {
+      id: 'consolidationFee',
+      label: 'Consolidation Fee (%)',
+      type: 'number' as const,
+      value: 3,
+      min: 0,
+      max: 10,
+      step: 0.5,
+      suffix: '%',
+      tooltip: 'Origination or processing fee for consolidation loan',
+      helpText: 'Usually 1-5% of loan amount',
+    },
   ], [])
 
   return (
@@ -101,6 +153,52 @@ export default function DebtPayoffCalculatorPage() {
         description="Get out of debt faster using Avalanche or Snowball method. Compare strategies and see how extra payments save you money."
         icon="📉"
       >
+        {/* ===== COMPREHENSIVE TIPS SECTION AT TOP ===== */}
+        <div className="mb-8 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 rounded-2xl p-6 border border-amber-100/50 shadow-sm">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <span className="text-2xl">💡</span>
+            Expert Debt Payoff Tips & Strategies
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60">
+              <h4 className="font-medium text-gray-800 mb-2 flex items-center gap-2">
+                <span className="text-lg">⛰️</span> Avalanche Method
+              </h4>
+              <p className="text-xs text-gray-600">Pay highest interest rate debt first. Saves the most money in interest payments. Best for math-focused debtors.</p>
+            </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60">
+              <h4 className="font-medium text-gray-800 mb-2 flex items-center gap-2">
+                <span className="text-lg">❄️</span> Snowball Method
+              </h4>
+              <p className="text-xs text-gray-600">Pay smallest balance debt first. Provides psychological wins and motivation. Best for behavior-focused debtors.</p>
+            </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60">
+              <h4 className="font-medium text-gray-800 mb-2 flex items-center gap-2">
+                <span className="text-lg">💰</span> Extra Payments
+              </h4>
+              <p className="text-xs text-gray-600">Even $50 extra monthly can save thousands in interest and shave years off your payoff timeline.</p>
+            </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60">
+              <h4 className="font-medium text-gray-800 mb-2 flex items-center gap-2">
+                <span className="text-lg">🔄</span> Balance Transfer
+              </h4>
+              <p className="text-xs text-gray-600">Transfer high-interest debt to 0% APR cards. Can save significant interest if you pay off before the promo ends.</p>
+            </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60">
+              <h4 className="font-medium text-gray-800 mb-2 flex items-center gap-2">
+                <span className="text-lg">📊</span> Debt Consolidation
+              </h4>
+              <p className="text-xs text-gray-600">Combine multiple debts into one loan with lower rate. Simplifies payments and can reduce total interest.</p>
+            </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60">
+              <h4 className="font-medium text-gray-800 mb-2 flex items-center gap-2">
+                <span className="text-lg">🎯</span> Stay Motivated
+              </h4>
+              <p className="text-xs text-gray-600">Track progress, celebrate milestones, and adjust budget as debts are paid off. Consistency is key to success.</p>
+            </div>
+          </div>
+        </div>
+
         {/* ✅ SEO-Optimized Guide at the TOP */}
         <div className="mb-8 bg-gradient-to-br from-red-50 via-rose-50 to-pink-50 rounded-2xl p-6 border border-red-100/50 shadow-sm">
           <div className="flex items-start gap-4">
@@ -222,6 +320,45 @@ export default function DebtPayoffCalculatorPage() {
             <ResultsDisplay results={results} formValues={formValues} currency={currency} />
           </div>
         </div>
+
+        {/* ===== DEBT STRATEGIES INFO SECTION ===== */}
+        {results && (
+          <div className="mt-8 bg-gradient-to-br from-rose-50 via-red-50 to-orange-50 rounded-2xl p-6 border border-rose-100/50 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <span className="text-2xl">📚</span>
+              Debt Payoff Strategies Explained
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60">
+                <h4 className="font-medium text-gray-800 mb-2 flex items-center gap-2">
+                  <span className="text-lg">⛰️</span> Avalanche Method
+                </h4>
+                <p className="text-xs text-gray-600 mb-2">Pay highest interest rate debt first. Maximizes interest savings.</p>
+                <div className="text-xs text-gray-500">
+                  <strong>Best for:</strong> Math-focused debtors who want to save the most money.
+                </div>
+              </div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60">
+                <h4 className="font-medium text-gray-800 mb-2 flex items-center gap-2">
+                  <span className="text-lg">❄️</span> Snowball Method
+                </h4>
+                <p className="text-xs text-gray-600 mb-2">Pay smallest balance debt first. Builds momentum and motivation.</p>
+                <div className="text-xs text-gray-500">
+                  <strong>Best for:</strong> Behavior-focused debtors who need quick wins to stay motivated.
+                </div>
+              </div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-white/60">
+                <h4 className="font-medium text-gray-800 mb-2 flex items-center gap-2">
+                  <span className="text-lg">🔄</span> Debt Consolidation
+                </h4>
+                <p className="text-xs text-gray-600 mb-2">Combine debts into one lower-rate loan. Simplifies payments.</p>
+                <div className="text-xs text-gray-500">
+                  <strong>Best for:</strong> Multiple high-interest debts with available consolidation offers.
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </CalculatorLayout>
 
       <div className="container mx-auto px-4 mt-8">

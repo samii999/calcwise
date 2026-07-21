@@ -16,6 +16,10 @@ export interface DebtPayoffInputs {
   totalMonthlyBudget: number
   strategy: 'avalanche' | 'snowball'
   extraPayment: number
+  hasConsolidation?: boolean
+  consolidationRate?: number
+  consolidationTerm?: number
+  consolidationFee?: number
 }
 
 export interface DebtPayoffResults {
@@ -29,6 +33,11 @@ export interface DebtPayoffResults {
   monthlyBreakdown: MonthlyBreakdown[]
   avalancheResults?: StrategyResult
   snowballResults?: StrategyResult
+  consolidationSavings?: number
+  consolidationMonthlyPayment?: number
+  consolidationTotalInterest?: number
+  consolidationPayoffMonths?: number
+  recommendedConsolidation?: boolean
 }
 
 export interface StrategyResult {
@@ -50,7 +59,16 @@ export interface MonthlyBreakdown {
 }
 
 export function calculateDebtPayoff(inputs: DebtPayoffInputs): DebtPayoffResults {
-  const { debts, totalMonthlyBudget, strategy, extraPayment = 0 } = inputs
+  const { 
+    debts, 
+    totalMonthlyBudget, 
+    strategy, 
+    extraPayment = 0,
+    hasConsolidation = false,
+    consolidationRate = 8,
+    consolidationTerm = 5,
+    consolidationFee = 3,
+  } = inputs
 
   // ===== 1. VALIDATE INPUTS =====
   const totalMinimums = debts.reduce((sum, d) => sum + d.minimumPayment, 0)
@@ -98,6 +116,34 @@ export function calculateDebtPayoff(inputs: DebtPayoffInputs): DebtPayoffResults
     year: 'numeric',
   })
 
+  // ===== 6. CALCULATE CONSOLIDATION SAVINGS =====
+  let consolidationSavings = 0
+  let consolidationMonthlyPayment = 0
+  let consolidationTotalInterest = 0
+  let consolidationPayoffMonths = 0
+  let recommendedConsolidation = false
+
+  if (hasConsolidation) {
+    const totalDebt = debts.reduce((sum, d) => sum + d.balance, 0)
+    const feeAmount = totalDebt * (consolidationFee / 100)
+    const loanAmount = totalDebt + feeAmount
+    const monthlyRate = consolidationRate / 100 / 12
+    const totalMonths = consolidationTerm * 12
+
+    // Calculate monthly payment for consolidation loan
+    if (monthlyRate > 0) {
+      consolidationMonthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / 
+        (Math.pow(1 + monthlyRate, totalMonths) - 1)
+    } else {
+      consolidationMonthlyPayment = loanAmount / totalMonths
+    }
+
+    consolidationTotalInterest = (consolidationMonthlyPayment * totalMonths) - loanAmount
+    consolidationPayoffMonths = totalMonths
+    consolidationSavings = Math.max(0, selectedResult.totalInterest - consolidationTotalInterest)
+    recommendedConsolidation = consolidationSavings > 0 && consolidationMonthlyPayment <= totalMonthlyBudget
+  }
+
   return {
     totalDebt: Math.round(selectedResult.totalDebt),
     totalInterest: Math.round(selectedResult.totalInterest),
@@ -117,6 +163,11 @@ export function calculateDebtPayoff(inputs: DebtPayoffInputs): DebtPayoffResults
       totalPayment: Math.round(snowballResult.totalPayment),
       payoffMonths: snowballResult.payoffMonths,
     },
+    consolidationSavings: Math.round(consolidationSavings),
+    consolidationMonthlyPayment: Math.round(consolidationMonthlyPayment),
+    consolidationTotalInterest: Math.round(consolidationTotalInterest),
+    consolidationPayoffMonths,
+    recommendedConsolidation,
   }
 }
 
